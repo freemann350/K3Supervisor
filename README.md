@@ -1,4 +1,7 @@
 # K8Supervisor
+<p align="center">
+<img align="center" src="https://github.com/freemann350/K8Supervisor/blob/main/public/img/favicon.png">
+</p>
 
 Simple K8S control panel with Laravel, using its ReST API
 
