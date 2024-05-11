@@ -86,37 +86,37 @@
           </li>
           <li class="nav-item nav-category">Resources</li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="{{route("Nodes.index")}}">
                 <i class="menu-icon mdi mdi-server"></i>
                 <span class="menu-title">Nodes</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="{{route("Namespaces.index")}}">
                 <i class="menu-icon mdi mdi-tournament"></i>
                 <span class="menu-title">Namespaces</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="{{route("Pods.index")}}">
                 <i class="menu-icon mdi mdi-apps"></i>
                 <span class="menu-title">Pods</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="{{route("Deployments.index")}}">
                 <i class="menu-icon mdi mdi-apps-box"></i>
                 <span class="menu-title">Deployments</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="{{route("Services.index")}}">
                 <i class="menu-icon mdi mdi-lan"></i>
                 <span class="menu-title">Services</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="{{route("Ingresses.index")}}">
                 <i class="menu-icon mdi mdi-sitemap"></i>
                 <span class="menu-title">Ingresses</span>
               </a>
