@@ -7,7 +7,7 @@ Simple K8S control panel with Laravel, using its ReST API
 
 This project was developed using [K3S](https://k3s.io) due to its ease of use and deployment, use this [simple official guide](https://docs.k3s.io/quick-start) to quickly set up your environment.
 
-It is **HIGHLY RECOMMENDED** to use this app with configured with authentication to the API without the use of *kubectl proxy*. Use [this official Kubernetes guide](https://kubernetes.io/docs/tasks/administer-cluster/access-cluster-api/?amp;amp#without-kubectl-proxy) to deploy the API with (TOKEN) authentication
+It is **HIGHLY RECOMMENDED** to use this app with configured with authentication to the API without the use of *kubectl proxy*. Use this [official Kubernetes guide](https://kubernetes.io/docs/tasks/administer-cluster/access-cluster-api/?amp;amp#without-kubectl-proxy) to deploy the API with (TOKEN) authentication
 
 UI Based on my previous project, [MikroKontrol](https://https://github.com/freemann350/MikroKontrol).
 
@@ -55,23 +55,32 @@ UI Based on my previous project, [MikroKontrol](https://https://github.com/freem
 
 # ToDo
 
-- [x] Login
-- Edit own information
-  - [x] Common information
-  - [x] Password
+- Users
+  - [x] Login
+  - Edit own information
+    - [x] Common information
+    - [x] Password
+  - [x] Create
+  - [x] Read
+  - [x] Update (admin cannot update another user password)
+  - [x] Delete
+  - [ ] Disallow admin to delete himself
 - Nodes
-  - [ ] Index
+  - [x] Index
   - [ ] Show
 - Namespaces
-  - [ ] Index
+  - [x] Index
   - [ ] Show
   - [ ] Create/Store
-  - [ ] Delete
+  - [x] Delete
 - Pods
-  - [ ] Index
+  - Index
+    - [x] List all
+    - [ ] List by namespace (URL Query String, filters)
+    - [ ] List only non-deployment pods (by default, filters)
   - [ ] Show
   - [ ] Create/Store
-  - [ ] Delete
+  - [x] Delete
 - Deployments
   - [ ] Index
   - [ ] Show

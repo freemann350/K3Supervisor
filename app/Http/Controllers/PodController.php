@@ -35,9 +35,20 @@ class PodController extends Controller
 
             $response = $client->get("/api/v1/pods");
 
-            $data = json_decode($response->getBody(), true);
+            $jsonData = json_decode($response->getBody(), true);
+            
+            $pods = [];
+            foreach ($jsonData['items'] as $jsonData) {
+                $data['name'] =  $jsonData['metadata']['name'];
+                $data['namespace'] =  $jsonData['metadata']['namespace'];
+                $data['podIP'] =  isset($jsonData['status']['podIP']) ? $jsonData['status']['podIP'] : "-";
+                $data['totalContainers'] = isset($jsonData['status']['containerStatuses']) ? count($jsonData['status']['containerStatuses']) : '';
+                $data['status'] =  $jsonData['status']['phase'];
 
-            return view('pods.index', ['pods' => $data]);
+                $pods[] = $data;
+            }
+
+            return view('pods.index', ['pods' => $pods]);
         } catch (\Exception $e) {
             return view('pods.index', ['conn_error' => $e->getMessage()]);
         }
@@ -137,7 +148,7 @@ class PodController extends Controller
                 'timeout' => 5
             ]);
     
-            $response = $client->delete("/api/v1/namespace/$namespace/pods/$id");
+            $response = $client->delete("/api/v1/namespaces/$namespace/pods/$id");
 
             return redirect()->route('Pods.index')->with('success-msg', "Pod '$id' was deleted with success");
         } catch (\Exception $e) {
@@ -153,29 +164,7 @@ class PodController extends Controller
     private function treat_error($errorMessage) 
     {
         $error = null;
-
-        // Search for the detail and error information within the error message
-        if (preg_match('/"detail":\s*"([^"]+)"/', $errorMessage, $matches)) {
-            $error['detail'] = $matches[1];
-        } else {
-            $error['detail'] = null;
-        }
-    
-        if (preg_match('/"error":\s*(\d+)/', $errorMessage, $matches)) {
-            $error['error'] = (int) $matches[1];
-        } else {
-            $error['error'] = null;
-        }        
-
-        if (preg_match('/"message":\s*"([^"]+)"/', $errorMessage, $matches)) {
-            $error['message'] = $matches[1];
-        } else {
-            $error['message'] = null;
-        }
-
-        if ($error['detail'] == null && $error['error'] == null && $error['message'] == null)
-            return null;
-
+        dd($errorMessage);
         return $error;
     }
 }

@@ -31,12 +31,37 @@ class NodeController extends Controller
                 'verify' => false,
                 'timeout' => 5
             ]);
-
+    
             $response = $client->get("/api/v1/nodes");
+    
+            $jsonData = json_decode($response->getBody(), true);
+            
+            $nodes = [];
+            foreach ($jsonData['items'] as $jsonData) {
+                $data['hostname'] =  $jsonData['metadata']['labels']['kubernetes.io/hostname'];
+                $data['arch'] =  $jsonData['metadata']['labels']['kubernetes.io/os'] . " (" .  $jsonData['metadata']['labels']['kubernetes.io/arch'] .")";
+    
+                if (isset($jsonData['metadata']['labels']['node-role.kubernetes.io/master'])) {
+                    $data['master'] =  "true";
+                } else {
+                    $data['master'] = "false";
+                }
+    
+                $data['instance'] =  $jsonData['metadata']['labels']['node.kubernetes.io/instance-type'];
+                $data['podCIDRs'] = $jsonData['spec']['podCIDRs'];
+                
+                foreach ($jsonData['status']['conditions'] as $condition) {
+                    if ($condition['type'] === 'Ready' && $condition['status'] == "True") {
+                        $data['status'] = $condition['status'];
+                        break;
+                    }
+                }
+                $data['os'] =  $jsonData['status']['nodeInfo']['osImage'];
 
-            $data = json_decode($response->getBody(), true);
-
-            return view('nodes.index', ['nodes' => $data]);
+                $nodes[] = $data;
+            }
+            
+            return view('nodes.index', ['nodes' => $nodes]);
         } catch (\Exception $e) {
             return view('nodes.index', ['conn_error' => $e->getMessage()]);
         }

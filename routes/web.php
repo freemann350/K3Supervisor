@@ -58,7 +58,8 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(PodController::class)->group(function () {
-        Route::resource('/Pods',PodController::class)->except(['edit','update']);
+        Route::resource('/Pods',PodController::class)->except(['edit','update','destroy']);
+        Route::delete('/Pods/{Namespace}/{Pod}','destroy')->name("Pods.destroy");
     });
 
     Route::controller(DeploymentController::class)->group(function () {

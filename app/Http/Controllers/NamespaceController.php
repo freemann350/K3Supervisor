@@ -35,9 +35,18 @@ class NamespaceController extends Controller
 
             $response = $client->get("/api/v1/namespaces");
 
-            $data = json_decode($response->getBody(), true);
+            $jsonData = json_decode($response->getBody(), true);
+            
+            $namespaces = [];
+            foreach ($jsonData['items'] as $jsonData) {
+                $data['name'] =  $jsonData['metadata']['name'];
+                $data['creation'] =  $jsonData['metadata']['creationTimestamp'];
+                $data['status'] =  $jsonData['status']['phase'];
 
-            return view('namespaces.index', ['namespaces' => $data]);
+                $namespaces[] = $data;
+            }
+
+            return view('namespaces.index', ['namespaces' => $namespaces]);
         } catch (\Exception $e) {
             return view('namespaces.index', ['conn_error' => $e->getMessage()]);
         }
@@ -139,7 +148,7 @@ class NamespaceController extends Controller
     
             $response = $client->delete("/api/v1/namespaces/" . $id);
 
-            return redirect()->route('Namespace.index')->with('success-msg', "Namespace '$id' was deleted with success");
+            return redirect()->route('Namespaces.index')->with('success-msg', "Namespace '$id' was deleted with success");
         } catch (\Exception $e) {
             $error = $this->treat_error($e->getMessage());
 
