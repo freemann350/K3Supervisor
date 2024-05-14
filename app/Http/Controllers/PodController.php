@@ -6,6 +6,7 @@ use App\Http\Requests\PodRequest;
 use Illuminate\Http\RedirectResponse;
 use GuzzleHttp\Client;
 use Illuminate\View\View;
+use Illuminate\Http\Request;
 
 class PodController extends Controller
 {
@@ -20,7 +21,7 @@ class PodController extends Controller
         $this->timeout  = env("K8S_CONNECTION_TIMEOUT", 5);
     }
     
-    public function index(): View
+    public function index(Request $request): View
     {
         try {
             $client = new Client([
@@ -38,14 +39,28 @@ class PodController extends Controller
             $jsonData = json_decode($response->getBody(), true);
             
             $pods = [];
-            foreach ($jsonData['items'] as $jsonData) {
-                $data['name'] =  $jsonData['metadata']['name'];
-                $data['namespace'] =  $jsonData['metadata']['namespace'];
-                $data['podIP'] =  isset($jsonData['status']['podIP']) ? $jsonData['status']['podIP'] : "-";
-                $data['totalContainers'] = isset($jsonData['status']['containerStatuses']) ? count($jsonData['status']['containerStatuses']) : '';
-                $data['status'] =  $jsonData['status']['phase'];
-
-                $pods[] = $data;
+            if ($request->query('showDefault') == "true") {
+                foreach ($jsonData['items'] as $jsonData) {
+                    $data['name'] =  $jsonData['metadata']['name'];
+                    $data['namespace'] =  $jsonData['metadata']['namespace'];
+                    $data['podIP'] =  isset($jsonData['status']['podIP']) ? $jsonData['status']['podIP'] : "-";
+                    $data['totalContainers'] = isset($jsonData['status']['containerStatuses']) ? count($jsonData['status']['containerStatuses']) : '';
+                    $data['status'] =  $jsonData['status']['phase'];
+    
+                    $pods[] = $data;
+                }
+            } else {
+                foreach ($jsonData['items'] as $jsonData) {
+                    if (!preg_match('/^kube-/', $jsonData['metadata']['namespace'])) {
+                        $data['name'] =  $jsonData['metadata']['name'];
+                        $data['namespace'] =  $jsonData['metadata']['namespace'];
+                        $data['podIP'] =  isset($jsonData['status']['podIP']) ? $jsonData['status']['podIP'] : "-";
+                        $data['totalContainers'] = isset($jsonData['status']['containerStatuses']) ? count($jsonData['status']['containerStatuses']) : '';
+                        $data['status'] =  $jsonData['status']['phase'];
+        
+                        $pods[] = $data;
+                    }
+                }
             }
 
             return view('pods.index', ['pods' => $pods]);

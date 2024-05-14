@@ -6,6 +6,7 @@ use App\Http\Requests\ServiceRequest;
 use Illuminate\Http\RedirectResponse;
 use GuzzleHttp\Client;
 use Illuminate\View\View;
+use Illuminate\Http\Request;
 
 class ServiceController extends Controller
 {
@@ -20,7 +21,7 @@ class ServiceController extends Controller
         $this->timeout  = env("K8S_CONNECTION_TIMEOUT", 5);
     }
     
-    public function index(): View
+    public function index(Request $request): View
     {
         try {
             $client = new Client([
@@ -35,9 +36,34 @@ class ServiceController extends Controller
 
             $response = $client->get("/api/v1/services");
 
-            $data = json_decode($response->getBody(), true);
+            $jsonData = json_decode($response->getBody(), true);
+            
+            $services = [];
+            if ($request->query('showDefault') == "true") {
+                foreach ($jsonData['items'] as $jsonData) {
+                    $data['name'] =  $jsonData['metadata']['name'];
+                    $data['namespace'] =  $jsonData['metadata']['namespace'];
+                    $data['ports'] =  count($jsonData['spec']['ports']);
+                    $data['selector'] =  isset($jsonData['spec']['selector']) ? $jsonData['spec']['selector'] : "-";
+                    $data['type'] =  $jsonData['spec']['type'];
 
-            return view('services.index', ['services' => $data]);
+                    $services[] = $data;
+                }
+            } else {
+                foreach ($jsonData['items'] as $jsonData) {
+                    if (!preg_match('/^kube-/', $jsonData['metadata']['namespace'])) {
+                        $data['name'] =  $jsonData['metadata']['name'];
+                        $data['namespace'] =  $jsonData['metadata']['namespace'];
+                        $data['ports'] =  count($jsonData['spec']['ports']);
+                        $data['selector'] =  isset($jsonData['spec']['selector']) ? $jsonData['spec']['selector'] : "-";
+                        $data['type'] =  $jsonData['spec']['type'];
+
+                        $services[] = $data;
+                    }
+                }
+            }
+
+            return view('services.index', ['services' => $services]);
         } catch (\Exception $e) {
             return view('services.index', ['conn_error' => $e->getMessage()]);
         }
@@ -139,7 +165,7 @@ class ServiceController extends Controller
     
             $response = $client->delete("/api/v1/namespaces/$namespace/services/$id");
 
-            return redirect()->route('services.index')->with('success-msg', "Service '$id' was deleted with success");
+            return redirect()->route('Services.index')->with('success-msg', "Service '$id' was deleted with success");
         } catch (\Exception $e) {
             $error = $this->treat_error($e->getMessage());
 

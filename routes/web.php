@@ -11,11 +11,11 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AdminMiddleware;
 
-/*
-Route::get('/', function () {
+
+Route::get('/testing', function () {
     return view('welcome');
 });
-*/
+
 
 Route::controller(AuthController::class)->group(function () {
     Route::get('/','index')->name("login");
@@ -63,14 +63,17 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(DeploymentController::class)->group(function () {
-        Route::resource('/Deployments',DeploymentController::class)->except(['edit','update']);
+        Route::resource('/Deployments',DeploymentController::class)->except(['edit','update','destroy']);
+        Route::delete('/Deployments/{Namespace}/{Deployment}','destroy')->name("Deployments.destroy");
     });
 
     Route::controller(ServiceController::class)->group(function () {
-        Route::resource('/Services',ServiceController::class)->except(['edit','update']);
+        Route::resource('/Services',ServiceController::class)->except(['edit','update','destroy']);
+        Route::delete('/Services/{Namespace}/{Service}','destroy')->name("Services.destroy");
     });
 
     Route::controller(IngressController::class)->group(function () {
-        Route::resource('/Ingresses',IngressController::class)->except(['edit','update']);
+        Route::resource('/Ingresses',IngressController::class)->except(['edit','update','destroy']);
+        Route::delete('/Ingresses/{Namespace}/{Ingress}','destroy')->name("Ingresses.destroy");
     });
 });

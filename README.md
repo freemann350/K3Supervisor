@@ -77,22 +77,28 @@ UI Based on my previous project, [MikroKontrol](https://https://github.com/freem
   - Index
     - [x] List all
     - [ ] List by namespace (URL Query String, filters)
-    - [ ] List only non-deployment pods (by default, filters)
+    - [ ] List only non-deployment pods (by default,search if metadata.ownerReferences.kind('ReplicaSet') exists, filters)
   - [ ] Show
   - [ ] Create/Store
   - [x] Delete
 - Deployments
-  - [ ] Index
+  - Index
+    - [x] List all
+    - [ ] List by namespace (URL Query String, filters)
   - [ ] Show
   - [ ] Create/Store
-  - [ ] Delete
+  - [x] Delete
 - Services
-  - [ ] Index
+  - Index
+    - [x] List all
+    - [ ] List by namespace (URL Query String, filters)
   - [ ] Show
   - [ ] Create/Store
-  - [ ] Delete
+  - [x] Delete
 - Ingresses
-  - [ ] Index
+  - Index
+    - [x] List all
+    - [ ] List by namespace (URL Query String, filters)
   - [ ] Show
   - [ ] Create/Store
-  - [ ] Delete
+  - [x] Delete

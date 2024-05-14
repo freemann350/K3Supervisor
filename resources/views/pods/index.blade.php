@@ -8,6 +8,19 @@
                 List of all <b>Pods</b> on the cluster
             </p>
             @if (!isset($conn_error))
+            <hr>
+            <h5>Filters</h5>
+            <form method="GET">
+            <div class="form-group">
+                <br>
+                <div class="col-sm-3 form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="showDefault" value="true" {{app('request')->input('showDefault')!=null ? "checked" : ""}}>
+                    <label class="form-check-label"> &nbsp;Show Pods from default Namespaces</label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-fw">Submit</button>
+            </form>
+            <hr>
             <div class="table-responsive">
             <table class="table table-hover table-striped" style="text-align:center" id="dt">
                 <thead>
@@ -21,6 +34,7 @@
                 </tr>
                 </thead>
                 <tbody>
+                @if (count($pods) > 0)
                 @foreach ($pods as $pod)                    
                 <tr>
                     <td>{{$pod['name']}}</td>
@@ -42,6 +56,7 @@
                     </td>
                 </tr>
                 @endforeach
+                @endif
                 </tbody>
             </table>
             </div>

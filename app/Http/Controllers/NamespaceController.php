@@ -6,6 +6,7 @@ use App\Http\Requests\NamespaceRequest;
 use Illuminate\Http\RedirectResponse;
 use GuzzleHttp\Client;
 use Illuminate\View\View;
+use Illuminate\Http\Request;
 
 class NamespaceController extends Controller
 {
@@ -20,7 +21,7 @@ class NamespaceController extends Controller
         $this->timeout  = env("K8S_CONNECTION_TIMEOUT", 5);
     }
     
-    public function index(): View
+    public function index(Request $request): View
     {
         try {
             $client = new Client([
@@ -34,17 +35,28 @@ class NamespaceController extends Controller
             ]);
 
             $response = $client->get("/api/v1/namespaces");
-
-            $jsonData = json_decode($response->getBody(), true);
             
-            $namespaces = [];
-            foreach ($jsonData['items'] as $jsonData) {
-                $data['name'] =  $jsonData['metadata']['name'];
-                $data['creation'] =  $jsonData['metadata']['creationTimestamp'];
-                $data['status'] =  $jsonData['status']['phase'];
+            $jsonData = json_decode($response->getBody(), true);
 
-                $namespaces[] = $data;
+            $namespaces = [];
+            if ($request->query('showDefault') == "true") {
+                foreach ($jsonData['items'] as $jsonData) {
+                    $data['name'] =  $jsonData['metadata']['name'];
+                    $data['creation'] =  $jsonData['metadata']['creationTimestamp'];
+                    $data['status'] =  $jsonData['status']['phase'];
+                    $namespaces[] = $data;
+                }
+            } else {
+                foreach ($jsonData['items'] as $jsonData) {
+                    if (!preg_match('/^kube-/', $jsonData['metadata']['name'])) {
+                        $data['name'] =  $jsonData['metadata']['name'];
+                        $data['creation'] =  $jsonData['metadata']['creationTimestamp'];
+                        $data['status'] =  $jsonData['status']['phase'];
+                        $namespaces[] = $data;
+                    }
+                }
             }
+            
 
             return view('namespaces.index', ['namespaces' => $namespaces]);
         } catch (\Exception $e) {
@@ -77,7 +89,7 @@ class NamespaceController extends Controller
     
     public function create(): View 
     {
-        return view("namespace.create");
+        return view("namespaces.create");
     }
 
     public function store(NamespaceRequest $request): RedirectResponse

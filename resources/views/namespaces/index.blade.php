@@ -8,6 +8,19 @@
                 List of all <b>Namespaces</b> on the cluster
             </p>
             @if (!isset($conn_error))
+            <hr>
+            <h5>Filters</h5>
+            <form method="GET">
+            <div class="form-group">
+                <br>
+                <div class="col-sm-3 form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="showDefault" value="true" {{app('request')->input('showDefault')!=null ? "checked" : ""}}>
+                    <label class="form-check-label"> &nbsp;Show default Namespaces</label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-fw">Submit</button>
+            </form>
+            <hr>
             <div class="table-responsive">
             <table class="table table-hover table-striped" style="text-align:center" id="dt">
                 <thead>
@@ -19,6 +32,7 @@
                 </tr>
                 </thead>
                 <tbody>
+                @if (count($namespaces) > 0)
                 @foreach ($namespaces as $namespace)                    
                 <tr>
                     <td>{{$namespace['name']}}</td>
@@ -38,6 +52,7 @@
                     </td>
                 </tr>
                 @endforeach
+                @endif
                 </tbody>
             </table>
             </div>
@@ -51,4 +66,9 @@
         </div>
     </div>
 </div>
+@if (isset($namespaces))
+<div class="d-grid gap-2">
+  <a class="btn btn-success btn-lg btn-block" href="{{ route('Namespaces.create') }}"><i class="mdi mdi-plus-circle"></i> Add new Namespace</a>
+</div>
+@endif
 @endsection

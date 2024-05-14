@@ -22,6 +22,7 @@
                 </tr>
                 </thead>
                 <tbody>
+                @if (count($nodes) > 0)
                 @foreach ($nodes as $node)                    
                 <tr>
                     <td>{{$node['hostname']}}</td>
@@ -41,6 +42,7 @@
                     @endif
                 </tr>
                 @endforeach
+                @endif
                 </tbody>
             </table>
             </div>

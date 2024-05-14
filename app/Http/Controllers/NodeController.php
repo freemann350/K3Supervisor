@@ -56,6 +56,7 @@ class NodeController extends Controller
                         break;
                     }
                 }
+                
                 $data['os'] =  $jsonData['status']['nodeInfo']['osImage'];
 
                 $nodes[] = $data;

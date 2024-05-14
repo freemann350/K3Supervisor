@@ -242,16 +242,44 @@
       "showMethod": "fadeIn",
       "hideMethod": "fadeOut"
     }
-
-    @if (session('error-msg'))
-      toastr.error('{{session('error-msg')['message']}} ({{session('error-msg')['error']}})<br>{{session('error-msg')['detail']}}', 'A problem has occurred')
+    @if (isset($error_msg))
+      toastr.error('{{$error_msg['status']}} ({{$error_msg['code']}})<br>{{$error_msg['message']}}', 'A problem has occurred')
     @endif
 
     @if (session('success-msg'))
       toastr.success('{{session('success-msg')}}','Success!')
     @endif
-  <!-- endinject -->
   </script>
+
+  <script>
+    function appendInput(baseDivName,inputName,label) {
+          const baseDiv = document.getElementById(baseDivName);
+          const baseInput = document.createElement('div');
+          baseInput.innerHTML = `
+          <div class="input-group">
+              <div class="input-group-prepend">
+                  <span class="input-group-text" id="">Key</span>
+              </div>
+              <input type="text" class="form-control" name="${inputName}">
+              <div class="input-group-prepend">
+                  <span class="input-group-text" id="">Value</span>
+              </div>
+              <input type="text" class="form-control" name="${inputName}">
+          </div>
+          <br>
+          <button type="button" class="btn btn-danger btn-sm removeInput"><i class="ti-trash"></i> Delete ${label}</i></button>
+          <hr>
+          `;
+          baseDiv.appendChild(baseInput);
+
+      document.addEventListener('click', function(event) {
+          if (event.target.classList.contains('removeInput')) {
+              event.target.parentElement.remove();
+          }
+      });
+    }
+  </script>
+  <!-- endinject -->
 </body>
 
 </html>

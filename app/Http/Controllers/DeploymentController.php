@@ -6,6 +6,7 @@ use App\Http\Requests\DeploymentRequest;
 use Illuminate\Http\RedirectResponse;
 use GuzzleHttp\Client;
 use Illuminate\View\View;
+use Illuminate\Http\Request;
 
 class DeploymentController extends Controller
 {
@@ -20,7 +21,7 @@ class DeploymentController extends Controller
         $this->timeout  = env("K8S_CONNECTION_TIMEOUT", 5);
     }
     
-    public function index(): View
+    public function index(Request $request): View
     {
         try {
             $client = new Client([
@@ -35,9 +36,42 @@ class DeploymentController extends Controller
 
             $response = $client->get("/apis/apps/v1/deployments");
 
-            $data = json_decode($response->getBody(), true);
-
-            return view('deployments.index', ['deployments' => $data]);
+            $jsonData = json_decode($response->getBody(), true);
+            
+            $deployments = [];
+            if ($request->query('showDefault') == "true") {
+                foreach ($jsonData['items'] as $jsonData) {
+                    $data['name'] =  $jsonData['metadata']['name'];
+                    $data['namespace'] =  $jsonData['metadata']['namespace'];
+                    if (isset($jsonData['status']['replicas']) && isset($jsonData['status']['unavailableReplicas'])) {
+                        $data['replicas'] =  $jsonData['status']['replicas']-$jsonData['status']['unavailableReplicas'] . "/" . $jsonData['status']['replicas'];
+                    } else if (isset($jsonData['status']['replicas']) && !isset($jsonData['status']['unavailableReplicas'])) {
+                        $data['replicas'] =  $jsonData['status']['replicas']."/".$jsonData['status']['replicas'];
+                    } else {
+                        $data['replicas'] = '-';
+                    }
+                    $data['totalContainers'] = isset($jsonData['spec']['template']['spec']['containers']) ? count($jsonData['spec']['template']['spec']['containers']) : '-';
+                    $deployments[] = $data;
+                }
+            } else {
+                foreach ($jsonData['items'] as $jsonData) {
+                    if (!preg_match('/^kube-/', $jsonData['metadata']['namespace'])) {
+                            $data['name'] =  $jsonData['metadata']['name'];
+                        $data['namespace'] =  $jsonData['metadata']['namespace'];
+                        if (isset($jsonData['status']['replicas']) && isset($jsonData['status']['unavailableReplicas'])) {
+                            $data['replicas'] =  $jsonData['status']['replicas']-$jsonData['status']['unavailableReplicas'] . "/" . $jsonData['status']['replicas'];
+                        } else if (isset($jsonData['status']['replicas']) && !isset($jsonData['status']['unavailableReplicas'])) {
+                            $data['replicas'] =  $jsonData['status']['replicas']."/".$jsonData['status']['replicas'];
+                        } else {
+                            $data['replicas'] = '-';
+                        }
+                        $data['totalContainers'] = isset($jsonData['spec']['template']['spec']['containers']) ? count($jsonData['spec']['template']['spec']['containers']) : '-';
+                        $deployments[] = $data;
+                    }
+                }
+            }
+            
+            return view('deployments.index', ['deployments' => $deployments]);
         } catch (\Exception $e) {
             return view('deployments.index', ['conn_error' => $e->getMessage()]);
         }
