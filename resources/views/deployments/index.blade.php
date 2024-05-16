@@ -11,14 +11,13 @@
             <hr>
             <h5>Filters</h5>
             <form method="GET">
-            <div class="form-group">
-                <br>
-                <div class="col-sm-3 form-check-inline">
-                    <input class="form-check-input" type="checkbox" name="showDefault" value="true" {{app('request')->input('showDefault')!=null ? "checked" : ""}}>
-                    <label class="form-check-label"> &nbsp;Show Deployments from default Namespaces</label>
+                <div class="form-check form-check-flat form-check-primary">
+                    <label class="form-check-label">
+                    <input type="checkbox" class="form-check-input" name="showDefault" value="true" {{app('request')->input('showDefault')!=null ? "checked" : ""}}>
+                    Show Deployments from default Namespaces
+                    <i class="input-helper"></i></label>
                 </div>
-            </div>
-            <button type="submit" class="btn btn-primary btn-fw">Submit</button>
+                <button type="submit" class="btn btn-primary btn-fw">Submit</button>
             </form>
             <hr>
             <div class="table-responsive">
@@ -62,4 +61,9 @@
         </div>
     </div>
 </div>
+@if (isset($deployments))
+<div class="d-grid gap-2">
+  <a class="btn btn-success btn-lg btn-block" href="{{ route('Deployments.create') }}"><i class="mdi mdi-plus-circle"></i> Add new Deployment</a>
+</div>
+@endif
 @endsection

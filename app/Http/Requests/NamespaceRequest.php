@@ -22,7 +22,33 @@ class NamespaceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            // MAIN INFO
+            'name' => [
+                'required',
+                'regex:/^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/'
+            ],
+            
+            // NOTES
+            'key_labels.*' => [
+                'required',
+                'regex:/^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$/'
+            ],
+            'value_labels.*' => [
+                'required',
+            ],
+            'key_annotations.*' => [
+                'required',
+                'regex:/^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$/'
+            ],
+            'value_annotations.*' => [
+                'required',
+            ],
+            
+            // NAMESPACE EXTRAS
+            'finalizers.*' => [
+                'required',
+                'regex:/^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$/'
+            ],
         ];
     }
 }

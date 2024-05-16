@@ -23092,7 +23092,7 @@ code {
 .input-group-prepend .input-group-text {
   border-color: #dee2e6;
   padding: .5rem .75rem;
-  color: #c9c8c8;
+  /*color: #c9c8c8;*/
 }
 
 .form-control, .asColorPicker-input, .dataTables_wrapper select, .select2-container--default .select2-selection--single, .select2-container--default .select2-selection--single .select2-search__field, .typeahead,

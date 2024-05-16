@@ -71,7 +71,8 @@ UI Based on my previous project, [MikroKontrol](https://https://github.com/freem
 - Namespaces
   - [x] Index
   - [ ] Show
-  - [ ] Create/Store
+  - [x] Create/Store
+    - [ ] Error parsing
   - [x] Delete
 - Pods
   - Index

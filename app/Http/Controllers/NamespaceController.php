@@ -94,24 +94,34 @@ class NamespaceController extends Controller
 
     public function store(NamespaceRequest $request): RedirectResponse
     {
-        /*$formData = $request->validated();
-        if ($formData["admin-mac"] != null )
-            $formData["auto-mac"] = "false";
+        $formData = $request->validated();
+        
+        $data['apiVersion'] = "v1";
+        $data['kind'] = "Namespace";
+        $data['metadata']['name'] = $formData['name'];
 
-        if (is_null($formData["ageing-time"]))
-            unset($formData["ageing-time"]);
+        if (isset($formData['key_labels']) && isset($formData['value_labels'])) {
+            foreach ($formData['key_labels'] as $key => $labels) {
+                $data['metadata']['labels'][$formData['key_labels'][$key]] = $formData['value_labels'][$key];
+            }
+        }
 
-        if (is_null($formData["mtu"]))
-            unset($formData["mtu"]);
+        if (isset($formData['key_annotations']) && isset($formData['value_annotations'])) {
+            foreach ($formData['key_annotations'] as $key => $annotations) {
+                $data['metadata']['annotations'][$formData['key_annotations'][$key]] = $formData['value_annotations'][$key];
+            }
+        }
 
-        if (is_null($formData["admin-mac"]))
-            unset($formData["admin-mac"]);
+        $finalizers = ['kubernetes'];
+        if (isset($formData['finalizers'])) {
+            foreach ($formData['finalizers'] as $key => $finalizer) {
+            array_push($finalizers,$formData['finalizers'][$key]);
+            }
+        }   
 
-        if (isset($formData["dhcp-snooping"]))
-            $formData["dhcp-snooping"] = "true";
-
-        $jsonData = json_encode($formData);
-
+        $data['spec']['finalizers'] = $finalizers;
+        
+        $jsonData = json_encode($data);
         try {
 
             $client = new Client([
@@ -120,30 +130,22 @@ class NamespaceController extends Controller
                     'Authorization' => $this->token,
                     'Accept' => 'application/json',
                 ],
+                'body' => $jsonData,
                 'verify' => false,
-                'timeout' => $this->timeout
-            ]);
-
-            $response = $client->post("/api/v1/namespaces", [
                 'timeout' => 5
             ]);
 
-            $response = $client->request('PUT', $device['method'] . "://" . $device['endpoint'] . "/rest/interface/bridge", [
-                'auth' => [$device['username'], $device['password']],
-                'headers' => ['Content-Type' => 'application/json'],
-                'body' => $jsonData,
-            ]);
+            $response = $client->post("/api/v1/namespaces");
 
-            return redirect()->route('Bridges.index', $device['id'])->with('success-msg', "A Bridge interface was added with success");
+            return redirect()->route('Namespaces.index')->with('success-msg', "Namespace '". $formData['name'] ."' was added with success");
         } catch (\Exception $e) {
+            //TODO: ERROR PARSING
             $error = $this->treat_error($e->getMessage());
-
             if ($error == null)
                 dd($e->getMessage());
 
             return redirect()->back()->withInput()->with('error-msg', $error);
-        }*/
-        return redirect()->back();
+        }
     }
 
     public function destroy($id) 

@@ -11,13 +11,12 @@
             <hr>
             <h5>Filters</h5>
             <form method="GET">
-            <div class="form-group">
-                <br>
-                <div class="col-sm-3 form-check-inline">
-                    <input class="form-check-input" type="checkbox" name="showDefault" value="true" {{app('request')->input('showDefault')!=null ? "checked" : ""}}>
-                    <label class="form-check-label"> &nbsp;Show default Namespaces</label>
+                <div class="form-check form-check-flat form-check-primary">
+                    <label class="form-check-label">
+                    <input type="checkbox" class="form-check-input" name="showDefault" value="true" {{app('request')->input('showDefault')!=null ? "checked" : ""}}>
+                    Show default Namespaces
+                    <i class="input-helper"></i></label>
                 </div>
-            </div>
             <button type="submit" class="btn btn-primary btn-fw">Submit</button>
             </form>
             <hr>
