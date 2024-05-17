@@ -80,7 +80,9 @@ UI Based on my previous project, [MikroKontrol](https://https://github.com/freem
     - [ ] List by namespace (URL Query String, filters)
     - [ ] List only non-deployment pods (by default,search if metadata.ownerReferences.kind('ReplicaSet') exists, filters)
   - [ ] Show
-  - [ ] Create/Store
+  - [x] Create/Store
+    - [ ] Error parsing
+    - [ ] Volumes
   - [x] Delete
 - Deployments
   - Index
