@@ -3,9 +3,9 @@
 <div class="col-md-12 grid-margin stretch-card">
     <div class="card">
         <div class="card-body">
-            <h4 class="card-title">Add new Static Route</h4>
+            <h4 class="card-title">Add new Pod</h4>
             <p class="card-description">
-                Here you can add a new Static Route
+                Here you can add a new Pod
             </p>
             <form method="POST" action="{{route('Pods.store')}}">
             @csrf
@@ -31,78 +31,82 @@
                     @enderror
                 </div>
             </div>
-            <div class="form-group">
-                <label class="col-sm-3 col-form-label">Labels</label>
-                <div class="col-sm-12" id="labels">
-                    @if(old('key_labels'))
-                        @foreach(old('key_labels') as $index => $key)
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">Key</span>
-                                </div>
-                                <input type="text" class="form-control @error("key_labels.{$index}") is-invalid @enderror" name="key_labels[]" value="{{ $key }}">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">Value</span>
-                                </div>
-                                <input type="text" class="form-control @error("value_labels.{$index}") is-invalid @enderror" name="value_labels[]" value="{{ old('value_labels')[$index] }}">
-                                <div class="input-group-append">
-                                    <button type="button" class="btn btn-danger removeInput"><i class="ti-trash"></i></button>
-                                </div>
-                            </div>
-                        @endforeach
-                    @endif
-                    <button type="button" class="btn btn-dark" onClick="appendInput('labels', 'labels[]')">+ Add Label</button>
-                    @error('key_labels.*')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                    @enderror
-                    @error('value_labels.*')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                    @enderror
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-12 col-form-label">Annotations</label>
-                <div class="col-sm-12" id="annotations">
-                    @if(old('key_annotations'))
-                        @foreach(old('key_annotations') as $index => $key)
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">Key</span>
-                                </div>
-                                <input type="text" class="form-control @error("key_annotations.{$index}") is-invalid @enderror" name="key_annotations[]" value="{{ $key }}">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">Value</span>
-                                </div>
-                                <input type="text" class="form-control @error("value_annotations.{$index}") is-invalid @enderror" name="value_annotations[]" value="{{ old('value_annotations')[$index] }}">
-                                <div class="input-group-append">
-                                    <button type="button" class="btn btn-danger removeInput"><i class="ti-trash"></i></button>
-                                </div>
-                            </div>
-                        @endforeach
-                    @endif
-
-                    <button type="button" class="btn btn-dark" onClick="appendInput('annotations', 'annotations[]', 2)">+ Add Annotation</button>
-                    @error('key_annotations.*')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                    @enderror
-                    @error('value_annotations.*')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                    @enderror
-                </div>
-            </div>
+            @include("template/resource_creation/infoCreation")
             <div class="form-group">
                 <label class="col-sm-12 col-form-label">Containers *</label>
-                <div class="col-sm-12" id="containers">
+                <div class="col-sm-12">
                     <button type="button" class="btn btn-dark" onClick="appendInput('containers', 'containers[]')">+ Add Container</button>
                 </div>
+                @error('containers')
+                        {{ $message }}
+                @enderror
+            </div>
+            <div class="row" id="containers">
+                @if(old('containers'))
+                    <script>let containerCount = 0;</script>
+                    @foreach(old('containers') as $index => $key)
+                    <div class="col-md-6 mb-4 dynamic-input">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Container #{{$index}} Details</h5>
+                                <hr>
+                                <div class="form-group">
+                                    <label class="col-form-label">Container name *</label>
+                                    <input type="text" name="containers[{{$index}}][name]" class="form-control" value="{{ isset($key['name']) ? $key['name'] : ''}}" placeholder="my-container">
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-form-label">Container image *</label>
+                                    <input type="text" name="containers[{{$index}}][image]" class="form-control" value="{{ isset($key['image']) ? $key['image'] : ''}}" placeholder="my-image">
+                                </div>
+                                <div>
+                                    <h6>Ports</h6>
+                                    <button type="button" class="btn btn-dark" onclick="addPort({{$index}})">Add Port</button>
+                                    <div id="ports-{{$index}}">
+                                        @if(old("containers.$index.ports"))
+                                            @foreach(old("containers.$index.ports") as $indexPort => $keyPort)
+                                            <div class="input-group mb-3 dynamic-input">
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">Port</span>
+                                                    </div>
+                                                    <input type="text" class="form-control" name="containers[{{$index}}][ports][{{$indexPort}}]" value="{{ isset($keyPort) ? $keyPort : ''}}" placeholder="80">
+                                                    <button type="button" class="btn btn-danger removeInput"><i class="ti-trash removeInput"></i></button>
+                                                </div>
+                                            </div>
+                                            @endforeach
+                                        @endif
+                                    </div>
+                                </div>
+                                <div>
+                                    <h6>Environment Variables</h6>
+                                    <button type="button" class="btn btn-dark" onclick="addEnv({{$index}})">Add Environment Variable</button>
+                                    <div id="env-{{$index}}">
+                                        @if(old("containers.$index.env.key") && old("containers.$index.env.value"))
+                                            @foreach(old("containers.$index.env.key") as $indexEnv => $keyEnv)
+                                            <div class="input-group mb-3 dynamic-input">
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">Key</span>
+                                                    </div>
+                                                    <input type="text" class="form-control" name="containers[{{$index}}][env][key][{{$indexEnv}}]" value="{{ old("containers.$index.env.key.$indexEnv") }}" placeholder="Key">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">Value</span>
+                                                    </div>
+                                                    <input type="text" class="form-control" name="containers[{{$index}}][env][value][{{$indexEnv}}]" value="{{ old("containers.$index.env.value.$indexEnv") }}" placeholder="Value">
+                                                    <button type="button" class="btn btn-danger removeInput"><i class="ti-trash removeInput"></i></button>
+                                                </div>
+                                            </div>
+                                            @endforeach
+                                        @endif
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-danger removeInput mt-3"><i class="ti-trash removeInput"></i> Remove Container</button>
+                            </div>
+                        </div>
+                    </div>
+                    <script>containerCount = {{$index}};</script>
+                    @endforeach
+                @endif
             </div>
             <div class="form-group">
                 <label class="col-sm-3 col-form-label">Volume type</label>

@@ -50,6 +50,9 @@ class PodRequest extends FormRequest
             ],
 
             // CONTAINERS
+            'containers' => [
+                'required'
+            ],
             'containers.*.name' => [
                 'required',
                 'regex:/^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$/'
@@ -69,7 +72,7 @@ class PodRequest extends FormRequest
                 'required'
             ],
 
-            // POD EXTRAS
+            //EXTRAS
             'restartpolicy' => [
                 'required',
                 Rule::in('Always','OnFailure','Never')

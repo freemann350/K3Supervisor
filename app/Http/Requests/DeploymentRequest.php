@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class DeploymentRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class DeploymentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +23,110 @@ class DeploymentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            // MAIN INFO
+            'name' => [
+                'required',
+                'regex:/^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/'
+            ],
+            'namespace' => [
+                'required',
+                'regex:/^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/'
+            ],
+
+            // NOTES
+            'key_labels.*' => [
+                'required',
+                'regex:/^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$/'
+            ],
+            'value_labels.*' => [
+                'required',
+            ],
+            'key_annotations.*' => [
+                'required',
+                'regex:/^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$/'
+            ],
+            'value_annotations.*' => [
+                'required',
+            ],
+
+            //POD MATCHING
+            'key_matchLabels' => [
+                'required'
+            ],
+            'value_matchLabels' => [
+                'required'
+            ],
+            'key_matchLabels.*' => [
+                'required',
+                'regex:/^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$/'
+            ],
+            'value_matchLabels.*' => [
+                'required'
+            ],
+
+            // TEMPLATE LABELS
+            'key_templateLabels' => [
+                'required'
+            ],
+            'value_templateLabels' => [
+                'required'
+            ],
+            'key_templateLabels.*' => [
+                'required',
+                'regex:/^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$/'
+            ],
+            'value_templateLabels.*' => [
+                'required'
+            ],
+
+            // CONTAINERS
+            'containers' => [
+                'required'
+            ],
+            'containers.*.name' => [
+                'required',
+                'regex:/^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$/'
+            ],
+            'containers.*.image' => [
+                'required',
+            ],
+            'containers.*.ports.*' => [
+                'required',
+                'regex:/^([0-9]+)$/'
+            ],
+            'containers.*.env.key.*' => [
+                'required',
+                'regex:/^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$/'
+            ],  
+            'containers.*.env.value.*' => [
+                'required'
+            ],
+
+            //EXTRAS
+            'strategy' => [
+                'required',
+                Rule::in('Auto','RollingUpdate', 'Recreate','Auto')
+            ],
+            'maxUnavailable' => [
+                'required_if:strategy,RollingUpdate',
+                'regex:/^(100|[1-9]?[0-9])%?$|^(0*[1-9][0-9]*)$/'
+            ],
+            'maxSurge' => [
+                'required_if:strategy,RollingUpdate',
+                'regex:/^(100|[1-9]?[0-9])%?$|^(0*[1-9][0-9]*)$/'
+            ],
+            'minReadySeconds' => [
+                'nullable',
+                'integer'
+            ],
+            'revisionHistoryLimit' => [
+                'nullable',
+                'integer'
+            ],
+            'progressDeadlineSeconds' => [
+                'nullable',
+                'integer'
+            ],
         ];
     }
 }

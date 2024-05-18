@@ -1,6 +1,8 @@
 <script>
+    @if (!old('containers'))
     let containerCount = 0;
-    
+    @endif
+
     function appendInput(baseDivName, inputName) {
         const baseDiv = document.getElementById(baseDivName);
         const baseInput = document.createElement('div');
@@ -22,9 +24,9 @@
         }
 
         if (baseDivName === 'containers') {
+            baseInput.classList.add('col-md-6', 'mb-4', 'dynamic-input');
             containerCount++;
             baseInput.innerHTML = `
-            <div class="container mt-4 dynamic-input">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Container #${containerCount} Details</h5>
@@ -50,7 +52,6 @@
                         <button type="button" class="btn btn-danger removeInput mt-3"><i class="ti-trash removeInput"></i> Remove Container</button>
                     </div>
                 </div>
-            </div>
             `;
         }
 
@@ -61,17 +62,22 @@
         const portDiv = document.createElement('div');
         portDiv.classList.add('input-group', 'mb-3', 'dynamic-input');
         portDiv.innerHTML = `
-            <input type="text" class="form-control" name="containers[${containerId}][ports][]" placeholder="Port">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Port</span>
+            </div>
+            <input type="text" class="form-control" name="containers[${containerId}][ports][]" placeholder="80">
             <button type="button" class="btn btn-danger removeInput"><i class="ti-trash removeInput"></i></button>
+        </div>
         `;
         document.getElementById(`ports-${containerId}`).appendChild(portDiv);
     }
 
     function addEnv(containerId) {
         const envDiv = document.createElement('div');
-        envDiv.classList.add('input-group', 'mb-3');
+        envDiv.classList.add('input-group', 'mb-3', 'dynamic-input');
         envDiv.innerHTML = `
-            <div class="input-group mb-3 dynamic-input">
+            <div class="input-group mb-3">
                 <div class="input-group-prepend">
                     <span class="input-group-text">Key</span>
                 </div>
@@ -84,10 +90,6 @@
             </div>
         `;
         document.getElementById(`env-${containerId}`).appendChild(envDiv);
-    }
-
-    function removeElement(element) {
-        element.parentElement.remove();
     }
 
     document.addEventListener('click', function(event) {

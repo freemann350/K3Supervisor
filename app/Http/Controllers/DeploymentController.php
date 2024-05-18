@@ -105,25 +105,106 @@ class DeploymentController extends Controller
         return view("deployments.create");
     }
 
-    public function store($namespace, DeploymentRequest $request): RedirectResponse
+    public function store(DeploymentRequest $request): RedirectResponse
     {
-        /*$formData = $request->validated();
-        if ($formData["admin-mac"] != null )
-            $formData["auto-mac"] = "false";
+        $formData = $request->validated();
+        
+        // MAIN INFO
+        $data['apiVersion'] = "apps/v1";
+        $data['kind'] = "Deployment";
+        $data['metadata']['name'] = $formData['name'];
+        $data['metadata']['namespace'] = $formData['namespace'];
 
-        if (is_null($formData["ageing-time"]))
-            unset($formData["ageing-time"]);
+        // LABELS & ANNOTATIONS
+        if (isset($formData['key_labels']) && isset($formData['value_labels'])) {
+            foreach ($formData['key_labels'] as $key => $labels) {
+                $data['metadata']['labels'][$formData['key_labels'][$key]] = $formData['value_labels'][$key];
+            }
+        }
 
-        if (is_null($formData["mtu"]))
-            unset($formData["mtu"]);
+        if (isset($formData['key_annotations']) && isset($formData['value_annotations'])) {
+            foreach ($formData['key_annotations'] as $key => $annotations) {
+                $data['metadata']['annotations'][$formData['key_annotations'][$key]] = $formData['value_annotations'][$key];
+            }
+        }
+        
+        // REPLICAS & SELECTORS
+        $data['spec']['replicas'] = 3;
+        
+        if (isset($formData['key_matchLabels']) && isset($formData['value_matchLabels'])) {
+            foreach ($formData['key_matchLabels'] as $key => $labels) {
+                $data['spec']['selector']['matchLabels'][$formData['key_matchLabels'][$key]] = $formData['value_matchLabels'][$key];
+            }
+        }
 
-        if (is_null($formData["admin-mac"]))
-            unset($formData["admin-mac"]);
+        $data['spec']['template']['metadata']['labels']= [];
+        if (isset($formData['key_templateLabels']) && isset($formData['value_templateLabels'])) {
+            foreach ($formData['key_templateLabels'] as $key => $labels) {
+                $data['spec']['template']['metadata']['labels'][$formData['key_templateLabels'][$key]] = $formData['value_templateLabels'][$key];
+            }
+        }
 
-        if (isset($formData["dhcp-snooping"]))
-            $formData["dhcp-snooping"] = "true";
+        // CONTAINERS
+        $data['spec']['template']['spec']['containers'] = [];
+        foreach ($formData['containers'] as $container) {
+            $arr_container = [];
+            
+            // MAIN INFO
+            $arr_container['name'] = $container['name'];
+            $arr_container['image'] = $container['image'];
+            
+            // PORTS
+            if (isset($container['ports'])) {
+                $arr_container['ports'] = [];
+                foreach ($container['ports'] as $port) {
+                    array_push($arr_container['ports'],['containerPort' => intval($port)]);
+                }
+            }
 
-        $jsonData = json_encode($formData);
+            // ENVIRONMENT VARIABLES
+            if (isset($container['env'])) {
+                $arr_container['env'] = [];
+                foreach ($container['env']['key'] as $keyEnv => $env) {
+                    $arr_env = [];
+                    $arr_env['name'] = $container['env']['key'][$keyEnv];
+                    $arr_env['value'] = $container['env']['value'][$keyEnv];
+
+                    array_push($arr_container['env'],$arr_env);
+                }
+            }
+            
+            // PUSH CONTAINER INFO TO CONTAINER LIST
+            array_push($data['spec']['template']['spec']['containers'],$arr_container);
+        };
+        
+        // EXTRA INFO
+        if (isset($formData['strategy'])) {
+            switch ($formData['strategy']) {
+                case 'RollingUpdate':
+                    $data['spec']['strategy']['type'] = 'RollingUpdate';
+                    $data['spec']['strategy']['rollingUpdate']['maxUnavailable'] = $formData['maxUnavailable'];
+                    $data['spec']['strategy']['rollingUpdate']['maxSurge'] = $formData['maxSurge'];
+                    break;
+                case 'Recreate':
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        if (isset($formData['minReadySeconds'])) {
+            $data['spec']['minReadySeconds'] = intval($formData['minReadySeconds']);
+        }
+
+        if (isset($formData['revisionHistoryLimit'])) {
+            $data['spec']['revisionHistoryLimit'] = intval($formData['revisionHistoryLimit']);
+        }
+
+        if (isset($formData['progressDeadlineSeconds'])) {
+            $data['spec']['progressDeadlineSeconds'] = intval($formData['progressDeadlineSeconds']);
+        }
+        
+        $jsonData = json_encode($data);
 
         try {
 
@@ -133,30 +214,24 @@ class DeploymentController extends Controller
                     'Authorization' => $this->token,
                     'Accept' => 'application/json',
                 ],
+                'body' => $jsonData,
                 'verify' => false,
-                'timeout' => $this->timeout
-            ]);
-
-            $response = $client->post("/api/v1/namespaces", [
                 'timeout' => 5
             ]);
 
-            $response = $client->request('PUT', $device['method'] . "://" . $device['endpoint'] . "/rest/interface/bridge", [
-                'auth' => [$device['username'], $device['password']],
-                'headers' => ['Content-Type' => 'application/json'],
-                'body' => $jsonData,
-            ]);
+            $response = $client->post("/apis/apps/v1/namespaces/".$formData['namespace']."/deployments");
 
-            return redirect()->route('Bridges.index', $device['id'])->with('success-msg', "A Bridge interface was added with success");
+            return redirect()->route('Deployments.index')->with('success-msg', "Deployment '". $formData['name'] ."' was added with success on Namespace '". $formData['namespace']."'");
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            dd($e->getResponse()->getBody()->getContents());
         } catch (\Exception $e) {
+            //TODO: ERROR PARSING
             $error = $this->treat_error($e->getMessage());
-
             if ($error == null)
                 dd($e->getMessage());
 
             return redirect()->back()->withInput()->with('error-msg', $error);
-        }*/
-        return redirect()->back();
+        }
     }
 
     public function destroy($namespace, $id) 

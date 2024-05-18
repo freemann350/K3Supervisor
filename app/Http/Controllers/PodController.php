@@ -118,32 +118,36 @@ class PodController extends Controller
             }
         }
         
-        //dd($formData);
         $data['spec']['containers'] = [];
         foreach ($formData['containers'] as $container) {
             $arr_container = [];
             $arr_container['name'] = $container['name'];
             $arr_container['image'] = $container['image'];
-            $arr_container['ports'] = [];
-            foreach ($container['ports'] as $port) {
-                array_push($arr_container['ports'],['containerPort' => intval($port)]);
+            
+            if (isset($container['ports'])) {
+                $arr_container['ports'] = [];
+                foreach ($container['ports'] as $port) {
+                    array_push($arr_container['ports'],['containerPort' => intval($port)]);
+                }
             }
 
-            $arr_container['env'] = [];
-            foreach ($container['env']['key'] as $keyEnv => $env) {
-                $arr_env = [];
-                $arr_env['name'] = $container['env']['key'][$keyEnv];
-                $arr_env['value'] = $container['env']['value'][$keyEnv];
+            if (isset($container['env'])) {
+                $arr_container['env'] = [];
+                foreach ($container['env']['key'] as $keyEnv => $env) {
+                    $arr_env = [];
+                    $arr_env['name'] = $container['env']['key'][$keyEnv];
+                    $arr_env['value'] = $container['env']['value'][$keyEnv];
 
-                array_push($arr_container['env'],$arr_env);
+                    array_push($arr_container['env'],$arr_env);
+                }
             }
-
+            
             array_push($data['spec']['containers'],$arr_container);
         };
 
         $data['spec']['restartPolicy'] = $formData['restartpolicy'];
         if (isset($formData['graceperiod'])) {
-            $data['spec']['terminationGracePeriodSeconds'] = $formData['graceperiod'];
+            $data['spec']['terminationGracePeriodSeconds'] = intval($formData['graceperiod']);
         }
         
         $jsonData = json_encode($data);
@@ -164,6 +168,8 @@ class PodController extends Controller
             $response = $client->post("/api/v1/namespaces/".$formData['namespace']."/pods");
 
             return redirect()->route('Pods.index')->with('success-msg', "Pod '". $formData['name'] ."' was added with success on Namespace '". $formData['namespace']."'");
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            dd($e->getResponse()->getBody()->getContents());
         } catch (\Exception $e) {
             //TODO: ERROR PARSING
             $error = $this->treat_error($e->getMessage());
