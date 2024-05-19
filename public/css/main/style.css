@@ -30435,6 +30435,14 @@ div.tagsinput span.tag a {
 /*
   REMOVE SWAL2 FROM THIS FILE IF POSSIBLE
 */
+.fix-height {
+  height: 31.5px;
+}
+
+select.fix-height {
+  font-size: 13px;
+}
+
 
 pre {
   white-space: pre;

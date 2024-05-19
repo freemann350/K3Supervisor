@@ -96,7 +96,6 @@
         const strategyType = document.getElementById('strategy').value;
         const parametersDiv = document.getElementById('strategyParameters');
 
-        // Clear any existing parameters
         parametersDiv.innerHTML = '';
 
         if (strategyType === 'RollingUpdate') {

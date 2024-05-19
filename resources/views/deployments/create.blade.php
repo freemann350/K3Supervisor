@@ -32,6 +32,17 @@
                 </div>
             </div>
             <div class="form-group">
+                <label class="col-sm-3 col-form-label">Replicas *</label>
+                <div class="col-sm-12">
+                    <input type="text" name="replicas" class="form-control @error('replicas') is-invalid @enderror" value="{{old('replicas')}}" placeholder="3">
+                    @error('replicas')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+            </div>
+            <div class="form-group">
                 <label class="col-sm-12 col-form-label">Label Matching *</label>
                 <div class="col-sm-12" id="matchLabels">
                     <button type="button" class="btn btn-dark" onClick="appendInput('matchLabels', 'matchLabels[]')">+ Add Label Matching</button>

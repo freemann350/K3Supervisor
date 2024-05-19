@@ -75,7 +75,7 @@ class PodRequest extends FormRequest
             //EXTRAS
             'restartpolicy' => [
                 'required',
-                Rule::in('Always','OnFailure','Never')
+                'in:Always,OnFailure,Never'
             ],
             'graceperiod' => [
                 'nullable',

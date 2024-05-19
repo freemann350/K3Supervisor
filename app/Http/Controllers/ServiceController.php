@@ -97,25 +97,77 @@ class ServiceController extends Controller
         return view("services.create");
     }
 
-    public function store($namespace, ServiceRequest $request): RedirectResponse
+    public function store(ServiceRequest $request): RedirectResponse
     {
-        /*$formData = $request->validated();
-        if ($formData["admin-mac"] != null )
-            $formData["auto-mac"] = "false";
+        $formData = $request->validated();
+        
+        //dd($formData);
+        // MAIN INFO
+        $data['apiVersion'] = "v1";
+        $data['kind'] = "Service";
+        $data['metadata']['name'] = $formData['name'];
+        $data['metadata']['namespace'] = $formData['namespace'];
 
-        if (is_null($formData["ageing-time"]))
-            unset($formData["ageing-time"]);
+        // LABELS & ANNOTATIONS
+        if (isset($formData['key_labels']) && isset($formData['value_labels'])) {
+            foreach ($formData['key_labels'] as $key => $label) {
+                $data['metadata']['labels'][$formData['key_labels'][$key]] = $formData['value_labels'][$key];
+            }
+        }
 
-        if (is_null($formData["mtu"]))
-            unset($formData["mtu"]);
+        if (isset($formData['key_annotations']) && isset($formData['value_annotations'])) {
+            foreach ($formData['key_annotations'] as $key => $annotation) {
+                $data['metadata']['annotations'][$formData['key_annotations'][$key]] = $formData['value_annotations'][$key];
+            }
+        }
 
-        if (is_null($formData["admin-mac"]))
-            unset($formData["admin-mac"]);
+        //SELECTOR
+        if (isset($formData['key_selectorLabels']) && isset($formData['value_selectorLabels'])) {
+            foreach ($formData['key_selectorLabels'] as $key => $selector) {
+                $data['spec']['selector'][$formData['key_selectorLabels'][$key]] = $formData['value_selectorLabels'][$key];
+            }
+        }
 
-        if (isset($formData["dhcp-snooping"]))
-            $formData["dhcp-snooping"] = "true";
+        // PORTS
+        $data['spec']['ports'] = [];
+        if (isset($formData['portName']) && isset($formData['protocol']) && isset($formData['port']) && isset($formData['target']) && isset($formData['nodePort'])) {
+            $arr_port = [];
+            foreach ($formData['portName'] as $key => $port) {
+                $arr_port['name'] = $formData['portName'][$key];
+                $arr_port['protocol'] = $formData['protocol'][$key];
+                $arr_port['port'] = intval($formData['port'][$key]);
+                $arr_port['targetPort'] = intval($formData['target'][$key]);
+                if ($formData['protocol'] != 'ClusterIP')
+                    $arr_port['nodePort'] = intval($formData['nodePort'][$key]);
 
-        $jsonData = json_encode($formData);
+                array_push($data['spec']['ports'],$arr_port);
+            }
+        }
+        
+
+        // EXTRA INFO
+        if (isset($formData['type'])  && $formData['type'] != "Auto") {
+            $data['spec']['type'] = $formData['type'];
+        }
+
+        if (isset($formData['type']) && isset($formData['externalName'])) {
+            $data['spec']['externalName'] = $formData['externalName'];
+        }
+
+        if (isset($formData['externalTrafficPolicy'])  && $formData['externalTrafficPolicy'] != "Auto") {
+            $data['spec']['externalTrafficPolicy'] = $formData['externalTrafficPolicy'];
+        }
+
+        if (isset($formData['sessionAffinity']) && $formData['sessionAffinity'] != "Auto") {
+            $data['spec']['sessionAffinity'] = $formData['sessionAffinity'];
+        }
+
+        if (isset($formData['sessionAffinity']) && isset($formData['sessionAffinity'])  && $formData['sessionAffinity'] != "Auto") {
+            $data['spec']['sessionAffinityConfig']['clientIP']['timeoutSeconds'] = intval($formData['sessionAffinityTimeoutSeconds']);
+        }
+        
+
+        $jsonData = json_encode($data);
 
         try {
 
@@ -125,21 +177,16 @@ class ServiceController extends Controller
                     'Authorization' => $this->token,
                     'Accept' => 'application/json',
                 ],
+                'body' => $jsonData,
                 'verify' => false,
                 'timeout' => $this->timeout
             ]);
 
-            $response = $client->post("/api/v1/namespaces", [
-                'timeout' => 5
-            ]);
+            $response = $client->post("/api/v1/namespaces/".$formData['namespace']."/services");
 
-            $response = $client->request('PUT', $device['method'] . "://" . $device['endpoint'] . "/rest/interface/bridge", [
-                'auth' => [$device['username'], $device['password']],
-                'headers' => ['Content-Type' => 'application/json'],
-                'body' => $jsonData,
-            ]);
-
-            return redirect()->route('Bridges.index', $device['id'])->with('success-msg', "A Bridge interface was added with success");
+            return redirect()->route('Services.index')->with('success-msg', "Service '". $formData['name'] ."' was added with success on Namespace '". $formData['namespace']."'");
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            dd($e->getResponse()->getBody()->getContents());
         } catch (\Exception $e) {
             $error = $this->treat_error($e->getMessage());
 
@@ -147,8 +194,7 @@ class ServiceController extends Controller
                 dd($e->getMessage());
 
             return redirect()->back()->withInput()->with('error-msg', $error);
-        }*/
-        return redirect()->back();
+        }
     }
 
     public function destroy($namespace, $id) 
@@ -160,7 +206,7 @@ class ServiceController extends Controller
                     'Authorization' => $this->token,
                 ],
                 'verify' => false,
-                'timeout' => 5
+                'timeout' => $this->timeout
             ]);
     
             $response = $client->delete("/api/v1/namespaces/$namespace/services/$id");

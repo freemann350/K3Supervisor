@@ -63,6 +63,10 @@ class DeploymentRequest extends FormRequest
             'value_matchLabels.*' => [
                 'required'
             ],
+            'replicas' => [
+                'required',
+                'integer'
+            ],
 
             // TEMPLATE LABELS
             'key_templateLabels' => [
@@ -105,7 +109,7 @@ class DeploymentRequest extends FormRequest
             //EXTRAS
             'strategy' => [
                 'required',
-                Rule::in('Auto','RollingUpdate', 'Recreate','Auto')
+                'in:Auto,RollingUpdate,Recreate'
             ],
             'maxUnavailable' => [
                 'required_if:strategy,RollingUpdate',

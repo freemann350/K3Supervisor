@@ -129,7 +129,7 @@ class DeploymentController extends Controller
         }
         
         // REPLICAS & SELECTORS
-        $data['spec']['replicas'] = 3;
+        $data['spec']['replicas'] = intval($formData['replicas']);
         
         if (isset($formData['key_matchLabels']) && isset($formData['value_matchLabels'])) {
             foreach ($formData['key_matchLabels'] as $key => $labels) {
@@ -216,7 +216,7 @@ class DeploymentController extends Controller
                 ],
                 'body' => $jsonData,
                 'verify' => false,
-                'timeout' => 5
+                'timeout' => $this->timeout
             ]);
 
             $response = $client->post("/apis/apps/v1/namespaces/".$formData['namespace']."/deployments");
