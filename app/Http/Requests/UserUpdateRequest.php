@@ -32,7 +32,7 @@ class UserUpdateRequest extends FormRequest
             'role' => [
                 "nullable",
                 "string",
-                "in:A,L,T"
+                "in:A,U"
             ]
         ];
     }

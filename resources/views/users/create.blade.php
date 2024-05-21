@@ -9,7 +9,7 @@
             <p class="card-description">
                 Here you can add add a new user
             </p>
-            <form method="POST" action="{{route('User.store')}}" enctype="multipart/form-data">
+            <form method="POST" action="{{route('Users.store')}}" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
                 <label class="col-sm-3 col-form-label">Name</label>
@@ -49,8 +49,7 @@
                 <div class="col-sm-12">
                     <select class="form-select" name="role">
                         <option value="A">Admin</option>
-                        <option value="L">Lecturer</option>
-                        <option value="T">Trainee</option>
+                        <option value="U">User</option>
                     </select>
                     @error('role')
                         <div class="invalid-feedback">

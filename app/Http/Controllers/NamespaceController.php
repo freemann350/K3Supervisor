@@ -94,35 +94,35 @@ class NamespaceController extends Controller
 
     public function store(NamespaceRequest $request): RedirectResponse
     {
-        $formData = $request->validated();
-        
-        $data['apiVersion'] = "v1";
-        $data['kind'] = "Namespace";
-        $data['metadata']['name'] = $formData['name'];
-
-        if (isset($formData['key_labels']) && isset($formData['value_labels'])) {
-            foreach ($formData['key_labels'] as $key => $labels) {
-                $data['metadata']['labels'][$formData['key_labels'][$key]] = $formData['value_labels'][$key];
-            }
-        }
-
-        if (isset($formData['key_annotations']) && isset($formData['value_annotations'])) {
-            foreach ($formData['key_annotations'] as $key => $annotations) {
-                $data['metadata']['annotations'][$formData['key_annotations'][$key]] = $formData['value_annotations'][$key];
-            }
-        }
-
-        $finalizers = ['kubernetes'];
-        if (isset($formData['finalizers'])) {
-            foreach ($formData['finalizers'] as $key => $finalizer) {
-            array_push($finalizers,$formData['finalizers'][$key]);
-            }
-        }   
-
-        $data['spec']['finalizers'] = $finalizers;
-        
-        $jsonData = json_encode($data);
         try {
+            $formData = $request->validated();
+            
+            $data['apiVersion'] = "v1";
+            $data['kind'] = "Namespace";
+            $data['metadata']['name'] = $formData['name'];
+
+            if (isset($formData['key_labels']) && isset($formData['value_labels'])) {
+                foreach ($formData['key_labels'] as $key => $labels) {
+                    $data['metadata']['labels'][$formData['key_labels'][$key]] = $formData['value_labels'][$key];
+                }
+            }
+
+            if (isset($formData['key_annotations']) && isset($formData['value_annotations'])) {
+                foreach ($formData['key_annotations'] as $key => $annotations) {
+                    $data['metadata']['annotations'][$formData['key_annotations'][$key]] = $formData['value_annotations'][$key];
+                }
+            }
+
+            $finalizers = ['kubernetes'];
+            if (isset($formData['finalizers'])) {
+                foreach ($formData['finalizers'] as $key => $finalizer) {
+                array_push($finalizers,$formData['finalizers'][$key]);
+                }
+            }   
+
+            $data['spec']['finalizers'] = $finalizers;
+            
+            $jsonData = json_encode($data);
 
             $client = new Client([
                 'base_uri' => $this->endpoint,
@@ -138,13 +138,25 @@ class NamespaceController extends Controller
             $response = $client->post("/api/v1/namespaces");
 
             return redirect()->route('Namespaces.index')->with('success-msg', "Namespace '". $formData['name'] ."' was added with success");
-        } catch (\Exception $e) {
-            //TODO: ERROR PARSING
-            $error = $this->treat_error($e->getMessage());
-            if ($error == null)
-                dd($e->getMessage());
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            
+            $errormsg = $this->treat_error($e->getResponse()->getBody()->getContents());
+            
+            if ($errormsg == null) {
+                return redirect()->back()->withInput()->with('error_msg', $errormsg);
+            }
 
-            return redirect()->back()->withInput()->with('error-msg', $error);
+            return redirect()->back()->withInput()->with('error_msg', $errormsg);
+        } catch (\Exception $e) {
+            $errormsg = $this->treat_error($e->getMessage());
+
+            if ($errormsg == null) {
+                $errormsg['message'] = $e->getMessage();
+                $errormsg['status'] = "Internal Server Error";
+                $errormsg['code'] = "500";
+            }
+
+            return redirect()->back()->withInput()->with('error_msg', $errormsg);
         }
     }
 
@@ -163,13 +175,25 @@ class NamespaceController extends Controller
             $response = $client->delete("/api/v1/namespaces/" . $id);
 
             return redirect()->route('Namespaces.index')->with('success-msg', "Namespace '$id' was deleted with success");
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            
+            $errormsg = $this->treat_error($e->getResponse()->getBody()->getContents());
+            
+            if ($errormsg == null) {
+                return redirect()->back()->withInput()->with('error_msg', $errormsg);
+            }
+
+            return redirect()->back()->withInput()->with('error_msg', $errormsg);
         } catch (\Exception $e) {
-            $error = $this->treat_error($e->getMessage());
+            $errormsg = $this->treat_error($e->getMessage());
 
-            if ($error == null)
-                dd($e->getMessage());
+            if ($errormsg == null) {
+                $errormsg['message'] = $e->getMessage();
+                $errormsg['status'] = "Internal Server Error";
+                $errormsg['code'] = "500";
+            }
 
-            return redirect()->back()->withInput()->with('error-msg', $error);
+            return redirect()->back()->withInput()->with('error_msg', $errormsg);
         }
     }
 
@@ -177,28 +201,16 @@ class NamespaceController extends Controller
     {
         $error = null;
 
-        // Search for the detail and error information within the error message
-        if (preg_match('/"detail":\s*"([^"]+)"/', $errorMessage, $matches)) {
-            $error['detail'] = $matches[1];
-        } else {
-            $error['detail'] = null;
-        }
-    
-        if (preg_match('/"error":\s*(\d+)/', $errorMessage, $matches)) {
-            $error['error'] = (int) $matches[1];
-        } else {
-            $error['error'] = null;
-        }        
+        $jsonData = json_decode($errorMessage, true);
 
-        if (preg_match('/"message":\s*"([^"]+)"/', $errorMessage, $matches)) {
-            $error['message'] = $matches[1];
-        } else {
-            $error['message'] = null;
-        }
-
-        if ($error['detail'] == null && $error['error'] == null && $error['message'] == null)
-            return null;
-
+        if (isset($jsonData['message']))
+            $error['message'] = $jsonData['message'];
+        if (isset($jsonData['status']))
+            $error['status'] = $jsonData['status'];
+        if (isset($jsonData['code']))
+            $error['code'] = $jsonData['code'];
+        
         return $error;
+
     }
 }

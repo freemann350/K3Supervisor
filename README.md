@@ -72,47 +72,30 @@ UI Based on my previous project, [MikroKontrol](https://https://github.com/freem
   - [x] Index
   - [ ] Show
   - [x] Create/Store
-    - [ ] Error message parsing
     - [ ] Show form errors
   - [x] Delete
 - Pods
   - Index
-    - [x] List all
-    - [ ] List by namespace (URL Query String, filters)
     - [ ] List only non-deployment pods (by default,search if metadata.ownerReferences.kind('ReplicaSet') exists, filters)
   - [ ] Show
   - [x] Create/Store
-    - [ ] Error message parsing
-    - [ ] Show form errors
     - [ ] Volumes
   - [x] Delete
 - Deployments
-  - Index
-    - [x] List all
-    - [ ] List by namespace (URL Query String, filters)
+  - [x] Index
   - [ ] Show
   - [x] Create/Store
-    - [ ] Error message parsing
-    - [ ] Show form errors
     - [ ] Volumes
   - [x] Delete
 - Services
-  - Index
-    - [x] List all
-    - [ ] List by namespace (URL Query String, filters)
+  - [x] Index
   - [ ] Show
   - [ ] Create/Store
-    - [ ] Error message parsing
-    - [ ] Show errors
   - [x] Delete
 - Ingresses
-  - Index
-    - [x] List all
-    - [ ] List by namespace (URL Query String, filters)
+  - [x] Index 
   - [ ] Show
-  - [ ] Create/Store
-    - [ ] Error message parsing
-    - [ ] Show errors
+  - [x] Create/Store
   - [x] Delete
 
 - Extras

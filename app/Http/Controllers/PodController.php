@@ -39,31 +39,48 @@ class PodController extends Controller
             $jsonData = json_decode($response->getBody(), true);
             
             $pods = [];
-            if ($request->query('showDefault') == "true") {
-                foreach ($jsonData['items'] as $jsonData) {
-                    $data['name'] =  $jsonData['metadata']['name'];
-                    $data['namespace'] =  $jsonData['metadata']['namespace'];
-                    $data['podIP'] =  isset($jsonData['status']['podIP']) ? $jsonData['status']['podIP'] : "-";
-                    $data['totalContainers'] = isset($jsonData['status']['containerStatuses']) ? count($jsonData['status']['containerStatuses']) : '';
-                    $data['status'] =  $jsonData['status']['phase'];
-    
-                    $pods[] = $data;
+            foreach ($jsonData['items'] as $jsonData) {
+                $data['name'] =  $jsonData['metadata']['name'];
+                $data['namespace'] =  $jsonData['metadata']['namespace'];
+                $data['podIP'] =  isset($jsonData['status']['podIP']) ? $jsonData['status']['podIP'] : "-";
+                $data['totalContainers'] = isset($jsonData['status']['containerStatuses']) ? count($jsonData['status']['containerStatuses']) : '';
+                $data['status'] =  $jsonData['status']['phase'];
+
+                $pods[] = $data;
+            }
+
+            //FILTERS
+            $namespaceList = [];
+            foreach ($pods as $key => $pod) {
+                if ($request->query('showDefault') != "true") {
+                    if (!preg_match('/^kube-/', $pod['namespace']))
+                    array_push($namespaceList,$pod['namespace']);
+                } else {
+                    array_push($namespaceList,$pod['namespace']);
                 }
-            } else {
-                foreach ($jsonData['items'] as $jsonData) {
-                    if (!preg_match('/^kube-/', $jsonData['metadata']['namespace'])) {
-                        $data['name'] =  $jsonData['metadata']['name'];
-                        $data['namespace'] =  $jsonData['metadata']['namespace'];
-                        $data['podIP'] =  isset($jsonData['status']['podIP']) ? $jsonData['status']['podIP'] : "-";
-                        $data['totalContainers'] = isset($jsonData['status']['containerStatuses']) ? count($jsonData['status']['containerStatuses']) : '';
-                        $data['status'] =  $jsonData['status']['phase'];
-        
-                        $pods[] = $data;
+            }
+
+            if ($request->query('showNamespaceData') && $request->query('showNamespaceData') != "All") {
+                foreach ($pods as $key => $pod) {
+                    if ($pod['namespace'] != $request->query('showNamespaceData')) 
+                    {
+                        unset($pods[$key]);
+                    }
+                }
+            }
+            $namespaceList = array_unique($namespaceList);
+            //dd($namespaceList);
+
+            if ($request->query('showDefault') != "true") {
+                foreach ($pods as $key => $pod) {
+                    if (preg_match('/^kube-/', $pod['namespace'])) 
+                    {
+                        unset($pods[$key]);
                     }
                 }
             }
 
-            return view('pods.index', ['pods' => $pods]);
+            return view('pods.index', ['pods' => $pods, 'namespaceList' => $namespaceList]);
         } catch (\Exception $e) {
             return view('pods.index', ['conn_error' => $e->getMessage()]);
         }
@@ -99,60 +116,60 @@ class PodController extends Controller
 
     public function store(PodRequest $request): RedirectResponse
     {
-        $formData = $request->validated();
-
-        $data['apiVersion'] = "v1";
-        $data['kind'] = "Pod";
-        $data['metadata']['name'] = $formData['name'];
-        $data['metadata']['namespace'] = $formData['namespace'];
-
-        if (isset($formData['key_labels']) && isset($formData['value_labels'])) {
-            foreach ($formData['key_labels'] as $key => $labels) {
-                $data['metadata']['labels'][$formData['key_labels'][$key]] = $formData['value_labels'][$key];
-            }
-        }
-
-        if (isset($formData['key_annotations']) && isset($formData['value_annotations'])) {
-            foreach ($formData['key_annotations'] as $key => $annotations) {
-                $data['metadata']['annotations'][$formData['key_annotations'][$key]] = $formData['value_annotations'][$key];
-            }
-        }
-        
-        $data['spec']['containers'] = [];
-        foreach ($formData['containers'] as $container) {
-            $arr_container = [];
-            $arr_container['name'] = $container['name'];
-            $arr_container['image'] = $container['image'];
-            
-            if (isset($container['ports'])) {
-                $arr_container['ports'] = [];
-                foreach ($container['ports'] as $port) {
-                    array_push($arr_container['ports'],['containerPort' => intval($port)]);
-                }
-            }
-
-            if (isset($container['env'])) {
-                $arr_container['env'] = [];
-                foreach ($container['env']['key'] as $keyEnv => $env) {
-                    $arr_env = [];
-                    $arr_env['name'] = $container['env']['key'][$keyEnv];
-                    $arr_env['value'] = $container['env']['value'][$keyEnv];
-
-                    array_push($arr_container['env'],$arr_env);
-                }
-            }
-            
-            array_push($data['spec']['containers'],$arr_container);
-        };
-
-        $data['spec']['restartPolicy'] = $formData['restartpolicy'];
-        if (isset($formData['graceperiod'])) {
-            $data['spec']['terminationGracePeriodSeconds'] = intval($formData['graceperiod']);
-        }
-        
-        $jsonData = json_encode($data);
-       
         try {
+            $formData = $request->validated();
+
+            $data['apiVersion'] = "v1";
+            $data['kind'] = "Pod";
+            $data['metadata']['name'] = $formData['name'];
+            $data['metadata']['namespace'] = $formData['namespace'];
+
+            if (isset($formData['key_labels']) && isset($formData['value_labels'])) {
+                foreach ($formData['key_labels'] as $key => $labels) {
+                    $data['metadata']['labels'][$formData['key_labels'][$key]] = $formData['value_labels'][$key];
+                }
+            }
+
+            if (isset($formData['key_annotations']) && isset($formData['value_annotations'])) {
+                foreach ($formData['key_annotations'] as $key => $annotations) {
+                    $data['metadata']['annotations'][$formData['key_annotations'][$key]] = $formData['value_annotations'][$key];
+                }
+            }
+            
+            $data['spec']['containers'] = [];
+            foreach ($formData['containers'] as $container) {
+                $arr_container = [];
+                $arr_container['name'] = $container['name'];
+                $arr_container['image'] = $container['image'];
+                
+                if (isset($container['ports'])) {
+                    $arr_container['ports'] = [];
+                    foreach ($container['ports'] as $port) {
+                        array_push($arr_container['ports'],['containerPort' => intval($port)]);
+                    }
+                }
+
+                if (isset($container['env'])) {
+                    $arr_container['env'] = [];
+                    foreach ($container['env']['key'] as $keyEnv => $env) {
+                        $arr_env = [];
+                        $arr_env['name'] = $container['env']['key'][$keyEnv];
+                        $arr_env['value'] = $container['env']['value'][$keyEnv];
+
+                        array_push($arr_container['env'],$arr_env);
+                    }
+                }
+                
+                array_push($data['spec']['containers'],$arr_container);
+            };
+
+            $data['spec']['restartPolicy'] = $formData['restartpolicy'];
+            if (isset($formData['graceperiod'])) {
+                $data['spec']['terminationGracePeriodSeconds'] = intval($formData['graceperiod']);
+            }
+            
+            $jsonData = json_encode($data);
+       
 
             $client = new Client([
                 'base_uri' => $this->endpoint,
@@ -169,14 +186,24 @@ class PodController extends Controller
 
             return redirect()->route('Pods.index')->with('success-msg', "Pod '". $formData['name'] ."' was added with success on Namespace '". $formData['namespace']."'");
         } catch (\GuzzleHttp\Exception\RequestException $e) {
-            dd($e->getResponse()->getBody()->getContents());
-        } catch (\Exception $e) {
-            //TODO: ERROR PARSING
-            $error = $this->treat_error($e->getMessage());
-            if ($error == null)
-                dd($e->getMessage());
+            
+            $errormsg = $this->treat_error($e->getResponse()->getBody()->getContents());
+            
+            if ($errormsg == null) {
+                return redirect()->back()->withInput()->with('error_msg', $errormsg);
+            }
 
-            return redirect()->back()->withInput()->with('error-msg', $error);
+            return redirect()->back()->withInput()->with('error_msg', $errormsg);
+        } catch (\Exception $e) {
+            $errormsg = $this->treat_error($e->getMessage());
+
+            if ($errormsg == null) {
+                $errormsg['message'] = $e->getMessage();
+                $errormsg['status'] = "Internal Server Error";
+                $errormsg['code'] = "500";
+            }
+
+            return redirect()->back()->withInput()->with('error_msg', $errormsg);
         }
     }
 
@@ -195,20 +222,41 @@ class PodController extends Controller
             $response = $client->delete("/api/v1/namespaces/$namespace/pods/$id");
 
             return redirect()->route('Pods.index')->with('success-msg', "Pod '$id' was deleted with success");
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            
+            $errormsg = $this->treat_error($e->getResponse()->getBody()->getContents());
+            
+            if ($errormsg == null) {
+                return redirect()->back()->withInput()->with('error_msg', $errormsg);
+            }
+
+            return redirect()->back()->withInput()->with('error_msg', $errormsg);
         } catch (\Exception $e) {
-            $error = $this->treat_error($e->getMessage());
+            $errormsg = $this->treat_error($e->getMessage());
 
-            if ($error == null)
-                dd($e->getMessage());
+            if ($errormsg == null) {
+                $errormsg['message'] = $e->getMessage();
+                $errormsg['status'] = "Internal Server Error";
+                $errormsg['code'] = "500";
+            }
 
-            return redirect()->back()->withInput()->with('error-msg', $error);
+            return redirect()->back()->withInput()->with('error_msg', $errormsg);
         }
     }
 
     private function treat_error($errorMessage) 
     {
         $error = null;
-        dd($errorMessage);
+
+        $jsonData = json_decode($errorMessage, true);
+
+        if (isset($jsonData['message']))
+            $error['message'] = $jsonData['message'];
+        if (isset($jsonData['status']))
+            $error['status'] = $jsonData['status'];
+        if (isset($jsonData['code']))
+            $error['code'] = $jsonData['code'];
+
         return $error;
     }
 }

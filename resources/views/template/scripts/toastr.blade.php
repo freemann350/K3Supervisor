@@ -17,8 +17,8 @@
       "hideMethod": "fadeOut"
     }
 
-    @if (isset($error_msg))
-      toastr.error('{{$error_msg['status']}} ({{$error_msg['code']}})<br>{{$error_msg['message']}}', 'A problem has occurred')
+    @if (session('error_msg'))
+      toastr.error('{{session('error_msg')['code']}} {{session('error_msg')['status']}}<br>{{session('error_msg')['message']}}', 'A problem has occurred')
     @endif
 
     @if (session('success-msg'))

@@ -35,7 +35,7 @@ class UserRequest extends FormRequest
             'role' => [
                 "required",
                 "string",
-                "in:A,L,T"
+                "in:A,U"
             ]
         ];
     }

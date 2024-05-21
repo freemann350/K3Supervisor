@@ -38,7 +38,9 @@
                     <button type="button" class="btn btn-dark" onClick="appendInput('containers', 'containers[]')">+ Add Container</button>
                 </div>
                 @error('containers')
+                    <div class="invalid-feedback">
                         {{ $message }}
+                    </div>
                 @enderror
             </div>
             <div class="row" id="containers">
@@ -52,12 +54,22 @@
                                 <hr>
                                 <div class="form-group">
                                     <label class="col-form-label">Container name *</label>
-                                    <input type="text" name="containers[{{$index}}][name]" class="form-control" value="{{ isset($key['name']) ? $key['name'] : ''}}" placeholder="my-container">
+                                    <input type="text" name="containers[{{$index}}][name]" class="form-control @error("containers.$index.name") is-invalid @enderror" value="{{ isset($key['name']) ? $key['name'] : ''}}" placeholder="my-container">
                                 </div>
+                                @error("containers.$index.name")
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                                 <div class="form-group">
                                     <label class="col-form-label">Container image *</label>
-                                    <input type="text" name="containers[{{$index}}][image]" class="form-control" value="{{ isset($key['image']) ? $key['image'] : ''}}" placeholder="my-image">
+                                    <input type="text" name="containers[{{$index}}][image]" class="form-control @error("containers.$index.image") is-invalid @enderror" value="{{ isset($key['image']) ? $key['image'] : ''}}" placeholder="my-image">
                                 </div>
+                                @error("containers.$index.image")
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                                 <div>
                                     <h6>Ports</h6>
                                     <button type="button" class="btn btn-dark" onclick="addPort({{$index}})">Add Port</button>
@@ -69,9 +81,14 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Port</span>
                                                     </div>
-                                                    <input type="text" class="form-control" name="containers[{{$index}}][ports][{{$indexPort}}]" value="{{ isset($keyPort) ? $keyPort : ''}}" placeholder="80">
+                                                    <input type="text" class="form-control @error("containers.$index.ports.$indexPort") is-invalid @enderror" name="containers[{{$index}}][ports][{{$indexPort}}]" value="{{ isset($keyPort) ? $keyPort : ''}}" placeholder="80">
                                                     <button type="button" class="btn btn-danger removeInput"><i class="ti-trash removeInput"></i></button>
                                                 </div>
+                                                @error("containers.$index.ports.$indexPort")
+                                                    <div class="invalid-feedback">
+                                                        {{ $message }}
+                                                    </div>
+                                                @enderror
                                             </div>
                                             @endforeach
                                         @endif
@@ -88,13 +105,23 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Key</span>
                                                     </div>
-                                                    <input type="text" class="form-control" name="containers[{{$index}}][env][key][{{$indexEnv}}]" value="{{ old("containers.$index.env.key.$indexEnv") }}" placeholder="Key">
+                                                    <input type="text" class="form-control @error("containers.$index.env.key.$indexEnv") is-invalid @enderror" name="containers[{{$index}}][env][key][{{$indexEnv}}]" value="{{ old("containers.$index.env.key.$indexEnv") }}" placeholder="Key">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Value</span>
                                                     </div>
-                                                    <input type="text" class="form-control" name="containers[{{$index}}][env][value][{{$indexEnv}}]" value="{{ old("containers.$index.env.value.$indexEnv") }}" placeholder="Value">
+                                                    <input type="text" class="form-control @error("containers.$index.env.value.$indexEnv") is-invalid @enderror" name="containers[{{$index}}][env][value][{{$indexEnv}}]" value="{{ old("containers.$index.env.value.$indexEnv") }}" placeholder="Value">
                                                     <button type="button" class="btn btn-danger removeInput"><i class="ti-trash removeInput"></i></button>
                                                 </div>
+                                                @error("containers.$index.env.key.$indexEnv")
+                                                    <div class="invalid-feedback">
+                                                        {{ $message }}
+                                                    </div>
+                                                @enderror
+                                                @error("containers.$index.env.value.$indexEnv")
+                                                    <div class="invalid-feedback">
+                                                        {{ $message }}
+                                                    </div>
+                                                @enderror
                                             </div>
                                             @endforeach
                                         @endif
@@ -119,11 +146,6 @@
                         <option>emptyDir</option> 
                         <option>configMap</option> 
                     </select>
-                    @error('name')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                    @enderror
                 </div>
             </div>
             <div class="form-group">
@@ -134,7 +156,7 @@
                         <option {{old('restartpolicy') == "OnFailure" ? 'selected' : ''}}>OnFailure</option> 
                         <option {{old('restartpolicy') == "Never" ? 'selected' : ''}}>Never</option> 
                     </select>
-                    @error('name')
+                    @error('restartpolicy')
                         <div class="invalid-feedback">
                             {{ $message }}
                         </div>

@@ -9,7 +9,7 @@
             <p class="card-description">
                 Here you can add edit a user
             </p>
-            <form method="POST" action="{{route('User.updateMe',$user['id'])}}" enctype="multipart/form-data">
+            <form method="POST" action="{{route('Users.updateMe',$user['id'])}}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             <div class="form-group">
@@ -44,7 +44,7 @@
     <div class="card">
         <div class="card-body">
             <h4 class="card-title">Edit password</h4>
-            <form method="POST" action="{{route('User.updatePassword',$user['id'])}}" enctype="multipart/form-data">
+            <form method="POST" action="{{route('Users.updatePassword',$user['id'])}}" enctype="multipart/form-data">
             @csrf
             @method('PATCH')
             <div class="form-group">

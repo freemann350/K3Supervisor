@@ -75,29 +75,54 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Name</span>
                             </div>
-                            <input type="text" class="form-control fix-height" name="portName[]" value="{{old("portName.$index")}}">
+                            <input type="text" class="form-control fix-height @error("portName.$index") is-invalid @enderror" name="portName[]" value="{{old("portName.$index")}}">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Protocol</span>
                             </div>
-                            <select class="form-select fix-height" name="protocol[]">
+                            <select class="form-select fix-height @error("protocol.$index") is-invalid @enderror" name="protocol[]">
                                 <option value="TCP" {{ $portData == "TCP" ? 'selected' : '' }}>TCP</option> 
                                 <option value="UDP" {{ $portData == "UDP" ? 'selected' : '' }}>UDP</option> 
                             </select>
+                            @error("portName.$index")
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                            @error("protocol.$index")
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                         </div>
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Port</span>
                             </div>
-                            <input type="text" class="form-control fix-height" name="port[]" value="{{old("port.$index")}}">
+                            <input type="text" class="form-control fix-height @error("port.$index") is-invalid @enderror" name="port[]" value="{{old("port.$index")}}">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Target</span>
                             </div>
-                            <input type="text" class="form-control fix-height" name="target[]" value="{{old("target.$index")}}">
+                            <input type="text" class="form-control fix-height @error("target.$index") is-invalid @enderror" name="target[]" value="{{old("target.$index")}}">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Node</span>
                             </div>
-                            <input type="text" class="form-control fix-height" name="nodePort[]" value="{{old("nodePort.$index")}}">
+                            <input type="text" class="form-control fix-height @error("nodePort.$index") is-invalid @enderror" name="nodePort[]" value="{{old("nodePort.$index")}}">
                             <button type="button" class="btn btn-danger removeInput fix-height"><i class="ti-trash removeInput"></i></button>
+                            @error("port.$index")
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                            @error("target.$index")
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                            @error("nodePort.$index")
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                         </div>
                         @endforeach
                     @endif
@@ -117,10 +142,12 @@
                 @if (old('type') == 'ExternalName')
                 <div class="form-group">    
                     <label>External Name *</label>
-                    <input type="text" name="externalName" class="form-control" placeholder="my-name.domain.test" value="{{old('externalName')}}">
+                    <input type="text" name="externalName" class="form-control @error("externalName") is-invalid @enderror" placeholder="my-name.domain.test" value="{{old('externalName')}}">
                 </div>
                 @error("externalName")
+                    <div class="invalid-feedback">
                         {{ $message }}
+                    </div>
                 @enderror
                 @endif
             </div>

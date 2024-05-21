@@ -9,8 +9,18 @@
             </p>
             @if (!isset($conn_error))
             <hr>
-            <h5>Filters</h5>
             <form method="GET">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Namespace</span>
+                    </div>
+                    <select class="form-select fix-height" name="showNamespaceData">
+                        <option value="All" {{ (app('request')->input('showNamespaceData') == 'All' || app('request')->input('showNamespaceData') == null) ? "selected" : ""}}>All</option> 
+                        @foreach ($namespaceList as $namespace)
+                        <option value="{{ $namespace }}" {{app('request')->input('showNamespaceData') == $namespace ? "selected" : ""}}>{{ $namespace }}</option> 
+                        @endforeach
+                    </select>
+                </div>
                 <div class="form-check form-check-flat form-check-primary">
                     <label class="form-check-label">
                     <input type="checkbox" class="form-check-input" name="showDefault" value="true" {{app('request')->input('showDefault')!=null ? "checked" : ""}}>

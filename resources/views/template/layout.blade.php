@@ -69,8 +69,8 @@
                             <span class="menu-title">Dashboard</span>
                         </a>
                     </li>
-                    <li class="nav-item {{ (Route::currentRouteName() == 'User.editMe') ? 'active' : '' }}">
-                        <a class="nav-link " href="{{route('User.editMe')}}">
+                    <li class="nav-item {{ (Route::currentRouteName() == 'Users.editMe') ? 'active' : '' }}">
+                        <a class="nav-link " href="{{route('Users.editMe')}}">
                             <i class="menu-icon mdi mdi-account-box"></i>
                             <span class="menu-title">My information</span>
                         </a>

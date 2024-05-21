@@ -32,11 +32,11 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(UserController::class)->group(function () {
-        Route::get('/User/me','editMe')->name("User.editMe")
+        Route::get('/User/me','editMe')->name("Users.editMe")
         ->middleware('can:updateMe,App\Models\User');
-        Route::put('/User/{user}/me','updateMe')->name("User.updateMe")
+        Route::put('/User/{user}/me','updateMe')->name("Users.updateMe")
         ->middleware('can:updateMe,App\Models\User');
-        Route::patch('/User/{user}/password','updatePassword')->name("User.updatePassword")->middleware('can:updateMe,App\Models\User');
+        Route::patch('/User/{user}/password','updatePassword')->name("Users.updatePassword")->middleware('can:updateMe,App\Models\User');
     });
 
 

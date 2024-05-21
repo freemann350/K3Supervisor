@@ -9,7 +9,6 @@
             </p>
             @if (!isset($conn_error))
             <hr>
-            <h5>Filters</h5>
             <form method="GET">
                 <div class="form-check form-check-flat form-check-primary">
                     <label class="form-check-label">

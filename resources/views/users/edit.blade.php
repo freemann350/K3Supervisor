@@ -39,8 +39,7 @@
                 <div class="col-sm-12">
                     <select class="form-select" name="role">
                         <option value="A" {{$user['role'] =='A' ? 'selected' : ""}}>Admin</option>
-                        <option value="L" {{$user['role'] =='L' ? 'selected' : ""}}>Lecturer</option>
-                        <option value="T" {{$user['role'] =='T' ? 'selected' : ""}}>Trainee</option>
+                        <option value="U" {{$user['role'] =='U' ? 'selected' : ""}}>User</option>
                     </select>
                     @error('role')
                         <div class="invalid-feedback">

@@ -51,4 +51,27 @@ class NamespaceRequest extends FormRequest
             ],
         ];
     }
+
+    public function messages(): array
+{
+    return [
+        // MAIN INFO
+        'name.required' => 'The name field is required.',
+        'name.regex' => 'The name field must start with a lowercase letter or number and can contain dashes.',
+
+        // NOTES
+        'key_labels.*.required' => 'Each label key is required.',
+        'key_labels.*.regex' => 'Each label key must be a valid DNS subdomain.',
+        'value_labels.*.required' => 'Each label value is required.',
+
+        'key_annotations.*.required' => 'Each annotation key is required.',
+        'key_annotations.*.regex' => 'Each annotation key must be a valid DNS subdomain.',
+        'value_annotations.*.required' => 'Each annotation value is required.',
+
+        // NAMESPACE EXTRAS
+        'finalizers.*.required' => 'Each finalizer is required.',
+        'finalizers.*.regex' => 'Each finalizer must be a valid DNS subdomain.',
+    ];
+}
+
 }
