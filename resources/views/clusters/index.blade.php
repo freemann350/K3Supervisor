@@ -27,7 +27,7 @@
                 <div class="col-md-6 grid-margin stretch-card">
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title"><strong>{{$cluster['name']}}</strong>'s Info </h4>
+                            <h4 class="card-title" id="{{$cluster['name']}}"><strong>{{$cluster['name']}}</strong>'s Info </h4>
                             <div class="row">
                                 <div class="col-md-6">
                                     <address>
@@ -55,7 +55,8 @@
                                             Online
                                         </p>
                                     </address>
-                                    <a class="btn {{ session('clusterId') == $cluster['id'] ? 'btn-dark' : 'btn-outline-dark'}} btn-lg btn-block" href="{{ route ('Clusters.selectCluster', $cluster['id']) }}">{{ session('clusterId') == $cluster['id'] ? 'Current Cluster' : 'Use this device'}}</a><br>
+                                    <a class="btn {{ session('clusterId') == $cluster['id'] ? 'btn-dark' : 'btn-outline-dark'}} btn-lg btn-block" 
+                                    href="{{ route ('Clusters.selectCluster', $cluster['id']) }}">{{ session('clusterId') == $cluster['id'] ? 'Current Cluster' : 'Use this device'}}</a><br>
                                     <a class="btn btn-outline-dark btn-lg btn-block" href="{{ route ('Clusters.edit', $cluster['id']) }}">Edit this device</a>
                                 @else
                                     <address>

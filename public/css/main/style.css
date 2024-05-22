@@ -22233,7 +22233,6 @@ code {
 .card .card-title {
   color: #010101;
   margin-bottom: 1.2rem;
-  text-transform: capitalize;
   font-size: 1.125rem;
   font-weight: 600;
 }

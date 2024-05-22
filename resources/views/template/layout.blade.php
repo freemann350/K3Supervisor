@@ -176,7 +176,8 @@
     <script src="{{ url('js/main/jquery.min.js') }}"></script>
     <script src="{{ url('js/main/toastr.min.js') }}"></script>
     <script src="{{ url('js/main/sweetalert2@11.js') }}"></script>
-    
+    <script src="{{ url('js/main/chart.js') }}"></script>
+
     <script>
         let table = new DataTable('#dt', {});
     </script>
@@ -184,6 +185,10 @@
     @include('template/scripts/swal')
 
     @include('template/scripts/toastr')
+
+    @if (Route::currentRouteName() == 'Dashboard')
+        @include('template/scripts/charts')
+    @endif
 
     @if (Route::currentRouteName() == 'Namespaces.create')
         @include('template/resource_creation/createNamespace')

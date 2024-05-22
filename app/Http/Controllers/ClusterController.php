@@ -31,7 +31,7 @@ class ClusterController extends Controller
                             'Accept' => 'application/json',
                         ],
                         'verify' => false,
-                        'timeout' => 5
+                        'timeout' => 0.5
                     ]);     
                 } else {
                     $client = new Client([
@@ -41,7 +41,7 @@ class ClusterController extends Controller
                             'Accept' => 'application/json',
                         ],
                         'verify' => false,
-                        'timeout' => 5
+                        'timeout' => 0.5
                     ]);
                 }
                 
