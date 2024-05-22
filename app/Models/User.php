@@ -50,4 +50,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function clusters(): HasMany
+    {
+        return $this->hasMany(Cluster::class, 'user_id', 'id');
+    }
 }

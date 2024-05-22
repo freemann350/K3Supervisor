@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ClusterController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeploymentController;
 use App\Http\Controllers\IngressController;
 use App\Http\Controllers\NamespaceController;
@@ -10,7 +12,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AdminMiddleware;
-
 
 Route::get('/testing', function () {
     return view('welcome');
@@ -23,9 +24,9 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/Dashboard', function () {
-        return view('dashboard.index');
-    })->name('Dashboard');
+    Route::controller(DashboardController::class)->group(function () {
+        Route::get('/Dashboard','index')->name("Dashboard");
+    });
 
     Route::controller(AuthController::class)->group(function () {
         Route::get('/Logout','logout')->name("Auth.logout");
@@ -48,6 +49,11 @@ Route::middleware('auth')->group(function () {
         Route::put('/Users/{user}','update')->name("Users.update")->middleware('can:update,App\Models\User');
         Route::delete('/Users/{user}','destroy')->name("Users.destroy")->middleware('can:delete,App\Models\User');
     })->middleware(AdminMiddleware::class);
+
+    Route::controller(ClusterController::class)->group(function () {
+        Route::resource('/Clusters',ClusterController::class);
+        Route::get('/Clusters/selectCluster/{device}','selectCluster')->name('Clusters.selectCluster');
+    });
 
     Route::controller(NodeController::class)->group(function () {
         Route::resource('/Nodes',NodeController::class)->only(['index','show']);

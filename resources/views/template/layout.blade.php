@@ -44,6 +44,7 @@
                 <ul class="navbar-nav">
                     <li class="nav-item font-weight-semibold d-none d-lg-block ms-0">
                         <h1 class="welcome-text">Hello, <span class="text-black fw-bold">{{isset(Auth::user()->name) ? Auth::user()->name : 'NONAME'}}</span></h1>
+                        <h3 class="welcome-sub-text">{{session('clusterName') ? "Currently using: ".session('clusterName') : 'Currently not using any cluster' }} </h3>
                     </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
@@ -62,11 +63,11 @@
             <!-- SIDEBAR -->
             <nav class="sidebar sidebar-offcanvas" id="sidebar">
                 <ul class="nav">
-                    <li class="nav-item nav-category">My pages</li>
-                    <li class="nav-item {{ Route::currentRouteName() == 'Dashboard' ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ route ('Dashboard') }}">
+                    <li class="nav-item nav-category">Main pages</li>
+                    <li class="nav-item {{ str_contains(Route::currentRouteName(),'Clusters.') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route ('Clusters.index') }}">
                             <i class="menu-icon mdi mdi-grid"></i>
-                            <span class="menu-title">Dashboard</span>
+                            <span class="menu-title">Clusters</span>
                         </a>
                     </li>
                     <li class="nav-item {{ (Route::currentRouteName() == 'Users.editMe') ? 'active' : '' }}">
@@ -84,7 +85,14 @@
                     </li>
                     @endif
                     </li>
-                    <li class="nav-item nav-category">Resources</li>
+                    @if(session('clusterId'))
+                    <li class="nav-item nav-category">Cluster Data & Resources</li>
+                        <li class="nav-item {{ Route::currentRouteName() == 'Dashboard' ? 'active' : '' }}">
+                            <a class="nav-link" href="{{ route ('Dashboard') }}">
+                                <i class="menu-icon mdi mdi-view-dashboard"></i>
+                                <span class="menu-title">Dashboard</span>
+                            </a>
+                        </li>
                         <li class="nav-item {{ Route::currentRouteName() == 'Nodes.index' ? 'active' : '' }}">
                             <a class="nav-link" href="{{route("Nodes.index")}}">
                                 <i class="menu-icon mdi mdi-server"></i>
@@ -122,6 +130,7 @@
                             </a>
                         </li>
                     </li>
+                    @endif
                     <li class="nav-item nav-category"></li>
                     <li class="nav-item">
                         <a class="nav-link" id="logout" href="#">

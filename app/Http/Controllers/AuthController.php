@@ -21,7 +21,7 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            return redirect()->intended('/Dashboard');
+            return redirect()->intended('/Clusters');
         } else {
             return back()->withErrors(['email' => 'Invalid credentials']);
         }
@@ -29,6 +29,8 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        session()->forget('clusterId');
+        session()->forget('clusterName');
         Auth::logout();
         return redirect()->route('login');
     }

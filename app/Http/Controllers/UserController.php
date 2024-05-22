@@ -49,8 +49,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->update($formData);
         
-        $name = $formData['name'];
-        return redirect()->route('Users.index')->withInput()->with('success-msg', "$name was updated with success");
+        return redirect()->route('Users.index')->withInput()->with('success-msg', $formData['name'] ." was updated with success");
     }
 
     public function editMe(): View
@@ -83,10 +82,8 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         
-        $name=$user->name;
-        
         $user->delete();
 
-        return redirect()->route('Users.index')->with('success-msg', "$name was deleted with success");
+        return redirect()->route('Users.index')->with('success-msg', "$user->name; was deleted with success");
     }
 }

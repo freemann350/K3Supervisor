@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ClusterException;
 use App\Http\Requests\ServiceRequest;
+use App\Models\Cluster;
 use Illuminate\Http\RedirectResponse;
 use GuzzleHttp\Client;
 use Illuminate\View\View;
@@ -16,9 +18,13 @@ class ServiceController extends Controller
 
     public function __construct()
     {
-        $this->endpoint = env("K8S_API_ENDPOINT", "https://localhost:6443");
-        $this->token = "Bearer " . env("K8S_BEARER_TOKEN");
-        $this->timeout  = env("K8S_CONNECTION_TIMEOUT", 5);
+        if (!session('clusterId')) 
+            throw new ClusterException();
+
+        $cluster = Cluster::findOrFail(session('clusterId'));
+        $this->endpoint = $cluster['endpoint'];
+        $this->token = "Bearer " . $cluster['token'];
+        $this->timeout  = $cluster['timeout'];
     }
     
     public function index(Request $request): View

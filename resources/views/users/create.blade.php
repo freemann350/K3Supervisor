@@ -1,5 +1,4 @@
 @extends('template.layout')
-
 @section('main-content')
 
 <div class="col-md-12 grid-margin stretch-card">
