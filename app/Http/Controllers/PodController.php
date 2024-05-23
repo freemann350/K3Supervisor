@@ -37,7 +37,7 @@ class PodController extends Controller
                     'Accept' => 'application/json',
                 ],
                 'verify' => false,
-                'timeout' => 5
+                'timeout' => $this->timeout
             ]);
 
             $response = $client->get("/api/v1/pods");
@@ -102,7 +102,7 @@ class PodController extends Controller
                     'Accept' => 'application/json',
                 ],
                 'verify' => false,
-                'timeout' => 5
+                'timeout' => $this->timeout
             ]);
 
             $response = $client->get("/api/v1/namespaces/$namespace/pods/$id");
@@ -185,7 +185,7 @@ class PodController extends Controller
                 ],
                 'body' => $jsonData,
                 'verify' => false,
-                'timeout' => 5
+                'timeout' => $this->timeout
             ]);
 
             $response = $client->post("/api/v1/namespaces/".$formData['namespace']."/pods");
@@ -222,7 +222,7 @@ class PodController extends Controller
                     'Authorization' => $this->token,
                 ],
                 'verify' => false,
-                'timeout' => 5
+                'timeout' => $this->timeout
             ]);
     
             $response = $client->delete("/api/v1/namespaces/$namespace/pods/$id");

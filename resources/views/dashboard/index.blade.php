@@ -12,6 +12,7 @@
                     @foreach ($nodes as $node)
                     <div class="col mb-4">
                         <div class="card h-100">
+                            <div class="card-header {{$node['master'] ? 'text-white bg-dark' : ''}} text-center">{{$node['name']}}</div>
                             <?php
                                 switch(true) {
                                     case(preg_match('/\bdebian\b/i', $node['os'])):
@@ -25,7 +26,7 @@
                                 }
                             ?>
                             <div class="card-body">
-                                <h5 class="card-title text-center">{{$node['name']}} {{$node['master'] ? '(master)' : ''}}</h5>
+                                <h5 class="card-title text-center"></h5>
                                 <img style="display: block;margin-left: auto;margin-right: auto;" src="{{$img}}" width="70" height="70" alt="Card image cap">
                                 <br>
                                 <p class="card-text text-center">{{$node['os']}}</p>
@@ -35,6 +36,7 @@
                                 <li class="list-group-item"><p class="text-center"><b>{{$node['cpus']}} CPUs ({{$node['arch']}})</b></p></li>
                                 <li class="list-group-item"><p class="text-center"><b>~{{$node['memory']}}GBs</b></p></li>
                             </ul>
+                            <div class="card-footer {{$node['master'] ? 'text-white bg-dark' : ''}} text-center">{{$node['master'] ? 'Control Plane' : 'Worker'}}</div>
                         </div>
                     </div>
                     @endforeach
@@ -63,10 +65,10 @@
                 <table class="table table-bordered table-hover table-striped" style="text-align:center" id="dt">
                     <thead>
                     <tr>
+                        <th>Time</th>
                         <th>Kind</th>
                         <th>Object</th>
                         <th>Type</th>
-                        <th>Time</th>
                         <th style="text-align:left">Message</th>
                     </tr>
                     </thead>
@@ -74,14 +76,14 @@
                     @if ($events != null)
                     @foreach ($events as $event)
                     <tr>
-                        <td>{{$event['kind']}}</td>
-                        <td>{{$event['name'] . '@' .$event['namespace']}}</td>
-                        <td>{{$event['type']}}</td>
                         @if($event['time'] != null)
                         <td>{{$event['time']}}</td>
                         @else    
                         <td style="text-align:left">From:{{$event['startTime']}}<br>To: {{$event['endTime']}}</td>
                         @endif
+                        <td>{{$event['kind']}}</td>
+                        <td>{{$event['name'] . '@' .$event['namespace']}}</td>
+                        <td>{{$event['type']}}</td>
                         <td style="text-align:justify">{{$event['message']}}</td>
                     </tr>
                     @endforeach

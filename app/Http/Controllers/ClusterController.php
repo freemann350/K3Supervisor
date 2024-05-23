@@ -21,7 +21,6 @@ class ClusterController extends Controller
         if ($clusters->isEmpty())
             $clusters = null;
        
-        
         if ($clusters != null) {
             foreach($clusters as $cluster) {
                 if ($cluster['auth_type'] == 'P') {
@@ -61,7 +60,34 @@ class ClusterController extends Controller
 
         $cluster = Cluster::findOrFail($id);
 
-        if (Auth::user()->id != $cluster->user_id) {
+        try {
+            if ($cluster['auth_type'] == 'P') {
+                $client = new Client([
+                    'base_uri' => $cluster['endpoint'],
+                    'headers' => [
+                        'Accept' => 'application/json',
+                    ],
+                    'verify' => false,
+                    'timeout' => 0.5
+                ]);     
+            } else {
+                $client = new Client([
+                    'base_uri' => $cluster['endpoint'],
+                    'headers' => [
+                        'Authorization' => "Bearer ". $cluster['token'],
+                        'Accept' => 'application/json',
+                    ],
+                    'verify' => false,
+                    'timeout' => 0.5
+                ]);
+            }
+            $response = $client->get("/api/v1");
+            $online = $response->getStatusCode();
+        } catch (\Exception $e) {
+            $online = null;
+        }
+
+        if (Auth::user()->id != $cluster->user_id || $online == null) {
             $errormsg['message'] = 'Could not use specified Cluster';
             $errormsg['status'] = 'Forbidden';
             $errormsg['code'] = '403';

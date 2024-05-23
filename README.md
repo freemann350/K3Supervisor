@@ -56,23 +56,11 @@ UI Based on my previous project, [MikroKontrol](https://https://github.com/freem
 # ToDo
 
 - Users
-  - [x] Login
-  - Edit own information
-    - [x] Common information
-    - [x] Password
-  - [x] Create
-  - [x] Read
-  - [x] Update (admin cannot update another user password)
-  - [x] Delete
   - [ ] Disallow admin to delete himself
 - Nodes
-  - [x] Index
   - [ ] Show
 - Namespaces
-  - [x] Index
   - [ ] Show
-  - [x] Create/Store
-    - [ ] Show form errors
   - [x] Delete
 - Pods
   - Index
@@ -80,24 +68,14 @@ UI Based on my previous project, [MikroKontrol](https://https://github.com/freem
   - [ ] Show
   - [x] Create/Store
     - [ ] Volumes
-  - [x] Delete
 - Deployments
-  - [x] Index
   - [ ] Show
   - [x] Create/Store
     - [ ] Volumes
-  - [x] Delete
 - Services
-  - [x] Index
   - [ ] Show
-  - [ ] Create/Store
-  - [x] Delete
 - Ingresses
-  - [x] Index 
   - [ ] Show
-  - [x] Create/Store
-  - [x] Delete
 
 - Extras
-  - [ ] ConfigsMaps
   - [ ] Backups

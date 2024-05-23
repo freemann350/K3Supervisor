@@ -38,7 +38,7 @@ class NamespaceController extends Controller
                     'Accept' => 'application/json',
                 ],
                 'verify' => false,
-                'timeout' => 5
+                'timeout' => $this->timeout
             ]);
 
             $response = $client->get("/api/v1/namespaces");
@@ -81,15 +81,32 @@ class NamespaceController extends Controller
                     'Accept' => 'application/json',
                 ],
                 'verify' => false,
-                'timeout' => 5
+                'timeout' => $this->timeout
             ]);
 
             $response = $client->get("/api/v1/namespaces/" . $id);
+            
+            $jsonData = json_decode($response->getBody(), true);
+            unset($jsonData['metadata']['managedFields']);
+            $json = json_encode($jsonData, JSON_PRETTY_PRINT);
+            
+            $namespace = [];
+            // METADATA
+            $namespace['name'] = isset($jsonData['metadata']['name']) ? $jsonData['metadata']['name'] : '';
+            $namespace['uid'] = isset($jsonData['metadata']['uid']) ? $jsonData['metadata']['uid'] : '';
+            $namespace['creationTimestamp'] = isset($jsonData['metadata']['creationTimestamp']) ? $jsonData['metadata']['creationTimestamp'] : '';
+            $namespace['labels'] = isset($jsonData['metadata']['labels']) ? $jsonData['metadata']['labels'] : '';
+            $namespace['annotations'] = isset($jsonData['metadata']['annotations']) ? $jsonData['metadata']['annotations'] : null;
 
-            $data = json_decode($response->getBody(), true);
-
-            return view('namespaces.show', ['namespace' => $data]);
+            // SPEC (FINALIZERS)
+            $namespace['finalizers'] = isset($jsonData['spec']['finalizers']) ? $jsonData['spec']['finalizers'] : '';
+            
+            // STATUS
+            $namespace['status'] = isset($jsonData['status']['phase']) ? $jsonData['status']['phase'] : 'Unkown';
+            
+            return view('namespaces.show', ['namespace' => $namespace, 'json' => $json]);
         } catch (\Exception $e) {
+            dd($e->getMessage());
             return view('namespaces.show', ['conn_error' => $e->getMessage()]);
         }
     }
@@ -139,7 +156,7 @@ class NamespaceController extends Controller
                 ],
                 'body' => $jsonData,
                 'verify' => false,
-                'timeout' => 5
+                'timeout' => $this->timeout
             ]);
 
             $response = $client->post("/api/v1/namespaces");
@@ -176,7 +193,7 @@ class NamespaceController extends Controller
                     'Authorization' => $this->token,
                 ],
                 'verify' => false,
-                'timeout' => 5
+                'timeout' => $this->timeout
             ]);
     
             $response = $client->delete("/api/v1/namespaces/" . $id);

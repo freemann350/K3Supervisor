@@ -7,6 +7,7 @@ use App\Models\Cluster;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use GuzzleHttp\Client;
+use GuzzleHttp\Promise;
 
 class DashboardController extends Controller
 {
@@ -43,7 +44,7 @@ class DashboardController extends Controller
                     'Accept' => 'application/json',
                 ],
                 'verify' => false,
-                'timeout' => 5
+                'timeout' => $this->timeout
             ]);
             
             $response = $client->get("/api/v1/nodes");
@@ -79,7 +80,6 @@ class DashboardController extends Controller
 
     private function getTotalResources() {
         try {
-            // NAMESPACES
             $client = new Client([
                 'base_uri' => $this->endpoint,
                 'headers' => [
@@ -87,78 +87,35 @@ class DashboardController extends Controller
                     'Accept' => 'application/json',
                 ],
                 'verify' => false,
-                'timeout' => 0.5
+                'timeout' => 1
             ]);
-            
-            $response = $client->get("/api/v1/namespaces");
-            $jsonData = json_decode($response->getBody(), true);
-            $totalResources['namespaces'] = count($jsonData['items']);
-
-            // PODS
-            $client = new Client([
-                'base_uri' => $this->endpoint,
-                'headers' => [
-                    'Authorization' => $this->token,
-                    'Accept' => 'application/json',
-                ],
-                'verify' => false,
-                'timeout' => 0.5
-            ]);
-            
-            $response = $client->get("/api/v1/pods");
-            $jsonData = json_decode($response->getBody(), true);
-            $totalResources['pods'] = count($jsonData['items']);
-
-            // DEPLOYMENTS
-            $client = new Client([
-                'base_uri' => $this->endpoint,
-                'headers' => [
-                    'Authorization' => $this->token,
-                    'Accept' => 'application/json',
-                ],
-                'verify' => false,
-                'timeout' => 0.5
-            ]);
-            
-            $response = $client->get("/apis/apps/v1/deployments");
-            $jsonData = json_decode($response->getBody(), true);
-            $totalResources['deployments'] = count($jsonData['items']);
-
-            // SERVICES
-            $client = new Client([
-                'base_uri' => $this->endpoint,
-                'headers' => [
-                    'Authorization' => $this->token,
-                    'Accept' => 'application/json',
-                ],
-                'verify' => false,
-                'timeout' => 0.5
-            ]);
-            
-            $response = $client->get("/api/v1/services");
-            $jsonData = json_decode($response->getBody(), true);
-            $totalResources['services'] = count($jsonData['items']);
-            
-            // INGRESSES
-            $client = new Client([
-                'base_uri' => $this->endpoint,
-                'headers' => [
-                    'Authorization' => $this->token,
-                    'Accept' => 'application/json',
-                ],
-                'verify' => false,
-                'timeout' => 0.5
-            ]);
-            
-            $response = $client->get("/apis/networking.k8s.io/v1/ingresses");
-            $jsonData = json_decode($response->getBody(), true);
-            $totalResources['ingresses'] = count($jsonData['items']);
-
+    
+            $promises = [
+                'namespaces' => $client->getAsync("/api/v1/namespaces"),
+                'pods' => $client->getAsync("/api/v1/pods"),
+                'deployments' => $client->getAsync("/apis/apps/v1/deployments"),
+                'services' => $client->getAsync("/api/v1/services"),
+                'ingresses' => $client->getAsync("/apis/networking.k8s.io/v1/ingresses"),
+            ];
+    
+            $responses = Promise\Utils::settle($promises)->wait();
+    
+            $totalResources = [];
+            foreach ($responses as $key => $result) {
+                if ($result['state'] === 'fulfilled') {
+                    $jsonData = json_decode($result['value']->getBody(), true);
+                    $totalResources[$key] = count($jsonData['items']);
+                } else {
+                    $totalResources[$key] = 0;
+                }
+            }
+    
             return $totalResources;
         } catch (\Exception $e) {
             return null;
         }
     }
+
     private function getEvents() {
         try {
             $client = new Client([
@@ -168,28 +125,30 @@ class DashboardController extends Controller
                     'Accept' => 'application/json',
                 ],
                 'verify' => false,
-                'timeout' => 5
+                'timeout' => $this->timeout
             ]);
 
             $response = $client->get("/api/v1/events");
-            
             $jsonData = json_decode($response->getBody(), true);
 
             $events = [];
             foreach ($jsonData['items'] as $jsonData) {
-                $data['kind'] =  $jsonData['involvedObject']['kind'];
-                $data['name'] =  $jsonData['involvedObject']['name'];
-                $data['namespace'] =  $jsonData['involvedObject']['namespace'];
-                $data['type'] =  $jsonData['type'];
-                $data['time'] =  $jsonData['eventTime'];
-                $data['startTime'] =  $jsonData['firstTimestamp'];
-                $data['endTime'] =  $jsonData['lastTimestamp'];
-                $data['message'] =  $jsonData['message'];
-                $events[] = $data;
+                try {
+                    $data['kind'] =  $jsonData['involvedObject']['kind'];
+                    $data['name'] =  $jsonData['involvedObject']['name'];
+                    $data['namespace'] =  isset($jsonData['involvedObject']['namespace']) ? $jsonData['involvedObject']['namespace'] : '-';
+                    $data['type'] =  $jsonData['type'];
+                    $data['time'] =  $jsonData['eventTime'];
+                    $data['startTime'] =  $jsonData['firstTimestamp'];
+                    $data['endTime'] =  $jsonData['lastTimestamp'];
+                    $data['message'] =  isset($jsonData['message']) ? $jsonData['message'] : '-';
+                    $events[] = $data;
+                } catch (\Throwable $th) {
+                    $events[] = null;
+                }
             }
 
-
-            return array_reverse($events);
+            return $events;
         } catch (\Exception $e) {
             return null;
         }

@@ -37,7 +37,7 @@ class IngressController extends Controller
                     'Accept' => 'application/json',
                 ],
                 'verify' => false,
-                'timeout' => 5
+                'timeout' => $this->timeout
             ]);
 
             $response = $client->get("/apis/networking.k8s.io/v1/ingresses");
@@ -115,7 +115,7 @@ class IngressController extends Controller
                     'Accept' => 'application/json',
                 ],
                 'verify' => false,
-                'timeout' => 5
+                'timeout' => $this->timeout
             ]);
 
             $response = $client->get("/apis/networking.k8s.io/v1/namespaces/$namespace/ingresses/$id");
@@ -238,7 +238,7 @@ class IngressController extends Controller
                     'Authorization' => $this->token,
                 ],
                 'verify' => false,
-                'timeout' => 5
+                'timeout' => $this->timeout
             ]);
     
             $response = $client->delete("/apis/networking.k8s.io/v1/namespaces/$namespace/ingresses/$id");

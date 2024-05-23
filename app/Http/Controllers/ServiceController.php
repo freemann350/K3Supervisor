@@ -37,7 +37,7 @@ class ServiceController extends Controller
                     'Accept' => 'application/json',
                 ],
                 'verify' => false,
-                'timeout' => 5
+                'timeout' => $this->timeout
             ]);
 
             $response = $client->get("/api/v1/services");
@@ -102,7 +102,7 @@ class ServiceController extends Controller
                     'Accept' => 'application/json',
                 ],
                 'verify' => false,
-                'timeout' => 5
+                'timeout' => $this->timeout
             ]);
 
             $response = $client->get("/api/v1/namespaces/$namespace/services/$id");

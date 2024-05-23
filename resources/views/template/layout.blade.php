@@ -33,7 +33,7 @@
                 </div>
                 <div>
                     <a class="navbar-brand brand-logo" href="{{ route ('Dashboard') }}">
-                        <img src="{{url('img/ksl.png')}}" alt="logo"/>
+                        <img src="{{url('img/logo.png')}}" style="height:28px" alt="logo"/>
                     </a>
                     <a class="navbar-brand brand-logo-mini" href="{{ route ('Dashboard') }}">
                         <img src="{{url('img/favicon.png')}}" alt="logo"/>
@@ -208,6 +208,10 @@
 
     @if (Route::currentRouteName() == 'Ingresses.create')
         @include('template/resource_creation/createIngress')
+    @endif
+
+    @if (isset($json))
+        @include('template/scripts/prettyJson')
     @endif
     <!-- endinject -->
 </body>

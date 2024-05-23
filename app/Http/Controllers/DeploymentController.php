@@ -37,7 +37,7 @@ class DeploymentController extends Controller
                     'Accept' => 'application/json',
                 ],
                 'verify' => false,
-                'timeout' => 5
+                'timeout' => $this->timeout
             ]);
 
             $response = $client->get("/apis/apps/v1/deployments");
@@ -106,7 +106,7 @@ class DeploymentController extends Controller
                     'Accept' => 'application/json',
                 ],
                 'verify' => false,
-                'timeout' => 5
+                'timeout' => $this->timeout
             ]);
 
             $response = $client->get("/apis/apps/v1/namespaces/$namespace/deployments/$id");
@@ -273,7 +273,7 @@ class DeploymentController extends Controller
                     'Authorization' => $this->token,
                 ],
                 'verify' => false,
-                'timeout' => 5
+                'timeout' => $this->timeout
             ]);
     
             $response = $client->delete("/apis/apps/v1/namespaces/$namespace/deployments/$id");
