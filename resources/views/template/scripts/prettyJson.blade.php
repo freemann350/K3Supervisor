@@ -32,5 +32,5 @@
     }
 
     var json = {!!$json!!}
-    document.getElementsByTagName("pre")[0].innerHTML = syntaxHighlight(json);
+    document.getElementById("json").innerHTML = syntaxHighlight(json);
 </script>

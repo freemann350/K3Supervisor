@@ -55,23 +55,13 @@ UI Based on my previous project, [MikroKontrol](https://https://github.com/freem
 
 # ToDo
 
-- Users
-  - [ ] Disallow admin to delete himself
-- Nodes
-  - [ ] Show
 - Pods
-  - Index
-    - [ ] List only non-deployment pods (by default,search if metadata.ownerReferences.kind('ReplicaSet') exists, filters)
   - [x] Create/Store
     - [ ] Volumes
 - Deployments
-  - [ ] Show
   - [x] Create/Store
     - [ ] Volumes
-- Services
-  - [ ] Show
-- Ingresses
-  - [ ] Show
 
 - Extras
   - [ ] Backups
+  - [ ] User Access Control

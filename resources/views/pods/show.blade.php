@@ -3,9 +3,9 @@
 <div class="col-md-12 grid-margin stretch-card">
     <div class="card">
         <div class="card-body">
-            <h4 class="card-title">Namespace "{{$pod['name']}}" Info</h4>
+            <h4 class="card-title">Pod "{{$pod['name']}}" Info</h4>
             <p class="card-description">
-                Shows all information about the Namespace {{$pod['name']}}
+                Shows all information about the Pod {{$pod['name']}}
             </p>
             <div class="row">
                 <div class="col-md-4">
@@ -25,7 +25,7 @@
                             <p class="mb-2"><b><u>{{$key}}</u></b>: {{$label}}</p>
                         @endforeach
                         @else
-                            <p class="mb-2">There are no labels on this resource</p>
+                            <p class="mb-2">There are no Labels on this resource</p>
                         @endif
                     </address>
                 </div>
@@ -37,7 +37,7 @@
                             <p class="mb-2"><b><u>{{$key}}</u></b>: {{$annotation}}</p>
                         @endforeach
                         @else
-                            <p class="mb-2">There are no annotations on this resource</p>
+                            <p class="mb-2">There are no Annotations on this resource</p>
                         @endif
                     </address>
                 </div>
@@ -82,9 +82,41 @@
                     <div class="col">
                         <address>
                             <h4 class="card-title">Ports</h4>
+                            @if (isset($container['ports']))
                             @foreach ($container['ports'] as $keyPort => $port)
-                            <p class="mb-2">:{{ isset($port['containerPort']) ? $port['containerPort'] : '-'}}/{{ isset($port['protocol']) ? $port['protocol'] : '-'}}</p>
+                                <p class="mb-2">:{{ isset($port['containerPort']) ? $port['containerPort'] : '-'}}/{{ isset($port['protocol']) ? $port['protocol'] : '-'}}</p>
+                            
                             @endforeach
+                            @else
+                                <p class="mb-2">There are no Ports on this resource</p>
+                            @endif
+                        </address>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6">
+                        <address>
+                            <h4 class="card-title">Environment Variables</h4>
+                            @if (isset($container['env']))
+                            @foreach ($container['env'] as $keyEnv => $env)
+                                <p class="mb-2"><b><u>{{ $env['name'] }}:</u></b> {{ isset($env['value']) ? $env['value'] : '-' }}</p>
+                            @endforeach
+                            @else
+                                <p class="mb-2">There are no Environment Variables on this resource</p>
+                            @endif
+                        </address>
+                    </div>
+                    <div class="col-md-6">
+                        <address>
+                            <h4 class="card-title">Volumes</h4>
+                            @if (isset($container['volumeMounts']))
+                            @foreach ($container['volumeMounts'] as $keyVolume => $volume)
+                            <p class="mb-2"><b><u>{{isset($volume['readOnly']) && $volume['readOnly'] == true ? "(RO)" : ''}} {{ isset($volume['name']) ? $volume['name'] : '-'}}</u></b> : {{ isset($volume['mountPath']) ? $volume['mountPath'] : '-'}}</p>
+                            @endforeach
+                            @else
+                            <p class="mb-2">There are no mapped Volumes on this resource</p>
+                            @endif
                         </address>
                     </div>
                 </div>
@@ -98,11 +130,11 @@
         <div class="card-body">
             @if ($pod != null)
             <div class="col-md-12">
-                <h4 class="card-title">Namespace {{$pod['name']}}'s JSON Data</h4>
+                <h4 class="card-title">Pod {{$pod['name']}}'s JSON Data</h4>
                 <p class="card-description">
-                    Shows all information of the Namespace "{{$pod['name']}}", in an unformatted manner
+                    Shows all information of the Pod "{{$pod['name']}}", in an unformatted manner
                 </p>
-                <pre>{{$json}}</pre>
+                <pre id="json">{{$json}}</pre>
             </div>
             @endif
         </div>

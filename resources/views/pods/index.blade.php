@@ -24,7 +24,13 @@
                 <div class="form-check form-check-flat form-check-primary">
                     <label class="form-check-label">
                     <input type="checkbox" class="form-check-input" name="showDefault" value="true" {{app('request')->input('showDefault')!=null ? "checked" : ""}}>
-                    Show Deployments from default Namespaces
+                    Show Pods from default Namespaces
+                    <i class="input-helper"></i></label>
+                </div>
+                <div class="form-check form-check-flat form-check-primary">
+                    <label class="form-check-label">
+                    <input type="checkbox" class="form-check-input" name="hideDeploymentPods" value="true" {{app('request')->input('hideDeploymentPods')!=null ? "checked" : ""}}>
+                    Hide Pods from Deployments Namespaces
                     <i class="input-helper"></i></label>
                 </div>
                 <button type="submit" class="btn btn-primary btn-fw">Submit</button>

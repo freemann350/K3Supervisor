@@ -51,17 +51,24 @@ class ClusterController extends Controller
             }
 
             $responses = Promise\Utils::settle($promises)->wait();
+            
 
             foreach ($clusters as $cluster) {
                 $result = $responses[$cluster->id];
+
                 if ($result['state'] === 'fulfilled') {
                     $cluster['online'] = $result['value']->getStatusCode();
                 } else {
+                    if ($cluster->id == session('clusterId')) {
+                        session()->forget('clusterId');
+                        session()->forget('clusterName');            
+                    }
+
+                    $cluster['reason'] = $result['reason']->getCode();
                     $cluster['online'] = null;
                 }
             }
         }
-
         return view("clusters.index", ['clusters' => $clusters]);
     }
 

@@ -182,9 +182,11 @@
     <script src="{{ url('js/main/chart.js') }}"></script>
     @endif
 
+    @if (Route::currentRouteName() == 'Dashboard' || str_contains(Route::currentRouteName(),'.index'))
     <script>
         let table = new DataTable('#dt', {});
     </script>
+    @endif
 
     @include('template/scripts/swal')
 

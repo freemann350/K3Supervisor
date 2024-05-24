@@ -59,15 +59,29 @@
                                     href="{{ route ('Clusters.selectCluster', $cluster['id']) }}">{{ session('clusterId') == $cluster['id'] ? 'Current Cluster' : 'Use this device'}}</a><br>
                                     <a class="btn btn-outline-dark btn-lg btn-block" href="{{ route ('Clusters.edit', $cluster['id']) }}">Edit this device</a>
                                 @else
-                                    <address>
-                                        <p class="fw-bold">
-                                            Status
-                                        </p>
-                                        <p class="mb-2 text-danger">
-                                            Unreachable
-                                        </p>
-                                    </address>
-                                    <a class="btn btn-outline-dark btn-lg btn-block" href="{{ route ('Clusters.edit', $cluster['id']) }}">Edit this device</a>
+                                    <p class="fw-bold">
+                                        Status
+                                    </p>
+                                    <p class="mb-2 text-danger">
+                                        Unreachable
+                                    </p>
+                                    <p class="fw-bold">
+                                        Reason
+                                    </p>
+                                    <p class="mb-2 text-warning">
+                                        @switch($cluster['reason'])
+                                            @case(0)
+                                                Health check failed/request timed out
+                                                @break
+                                            @case(401)
+                                                Authentication Error (bad token/proxy error)
+                                                @break   
+                                            @default
+                                                Unkown error (HTTP code {{ $cluster['reason'] }})
+                                        @endswitch
+                                    </p>
+                                </address>
+                                <a class="btn btn-outline-dark btn-lg btn-block" href="{{ route ('Clusters.edit', $cluster['id']) }}">Edit this device</a>
                                 @endif
                                 </div>
                             </div>

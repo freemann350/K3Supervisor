@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ClusterConnectionException;
 use App\Exceptions\ClusterException;
 use App\Http\Requests\IngressRequest;
 use App\Models\Cluster;
@@ -22,9 +23,45 @@ class IngressController extends Controller
             throw new ClusterException();
 
         $cluster = Cluster::findOrFail(session('clusterId'));
+
+        if ($this->checkConnection($cluster) == -1)
+            throw new ClusterConnectionException();
+
         $this->endpoint = $cluster['endpoint'];
         $this->token = "Bearer " . $cluster['token'];
         $this->timeout  = $cluster['timeout'];
+    }
+
+    private function checkConnection($cluster) {
+        
+        try {
+            if ($cluster['auth_type'] == 'P') {
+                $client = new Client([
+                    'base_uri' => $cluster['endpoint'],
+                    'headers' => [
+                        'Accept' => 'application/json',
+                    ],
+                    'verify' => false,
+                    'timeout' => 0.5
+                ]);     
+            } else {
+                $client = new Client([
+                    'base_uri' => $cluster['endpoint'],
+                    'headers' => [
+                        'Authorization' => "Bearer ". $cluster['token'],
+                        'Accept' => 'application/json',
+                    ],
+                    'verify' => false,
+                    'timeout' => 0.5
+                ]);
+            }
+            $response = $client->get("/api/v1");
+            $online = $response->getStatusCode();
+        } catch (\Exception $e) {
+            $online = -1;
+        }
+
+        return $online;
     }
     
     public function index(Request $request): View
@@ -120,9 +157,25 @@ class IngressController extends Controller
 
             $response = $client->get("/apis/networking.k8s.io/v1/namespaces/$namespace/ingresses/$id");
 
-            $data = json_decode($response->getBody(), true);
-
-            return view('ingresses.show', ['ingress' => $data]);
+            $jsonData = json_decode($response->getBody(), true);
+            unset($jsonData['metadata']['managedFields']);
+            $json = json_encode($jsonData, JSON_PRETTY_PRINT);
+            
+            $data = [];
+            // METADATA
+            $data['name'] = isset($jsonData['metadata']['name']) ? $jsonData['metadata']['name'] : '';
+            $data['namespace'] = isset($jsonData['metadata']['namespace']) ? $jsonData['metadata']['namespace'] : '';
+            $data['uid'] = isset($jsonData['metadata']['uid']) ? $jsonData['metadata']['uid'] : '';
+            $data['creationTimestamp'] = isset($jsonData['metadata']['creationTimestamp']) ? $jsonData['metadata']['creationTimestamp'] : '';
+            $data['labels'] = isset($jsonData['metadata']['labels']) ? $jsonData['metadata']['labels'] : null;
+            $data['annotations'] = isset($jsonData['metadata']['annotations']) ? $jsonData['metadata']['annotations'] : null;
+            
+            // SPEC
+            $data['defaultBackendName'] = isset($jsonData['spec']['defaultBackend']['service']['name']) ? $jsonData['spec']['defaultBackend']['service']['name'] : null;
+            $data['defaultBackendPort'] = isset($jsonData['spec']['defaultBackend']['service']['port']['number']) ? $jsonData['spec']['defaultBackend']['service']['port']['number'] : null;
+            $data['rules'] = isset($jsonData['spec']['rules']) ? $jsonData['spec']['rules'] : null;
+            
+            return view('ingresses.show', ['ingress' => $data, 'json' => $json]);
         } catch (\Exception $e) {
             return view('ingresses.show', ['conn_error' => $e->getMessage()]);
         }

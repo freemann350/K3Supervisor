@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ClusterConnectionException;
 use App\Exceptions\ClusterException;
 use App\Models\Cluster;
 use Illuminate\View\View;
@@ -20,9 +21,45 @@ class NodeController extends Controller
             throw new ClusterException();
 
         $cluster = Cluster::findOrFail(session('clusterId'));
+
+        if ($this->checkConnection($cluster) == -1)
+            throw new ClusterConnectionException();
+
         $this->endpoint = $cluster['endpoint'];
         $this->token = "Bearer " . $cluster['token'];
         $this->timeout  = $cluster['timeout'];
+    }
+
+    private function checkConnection($cluster) {
+        
+        try {
+            if ($cluster['auth_type'] == 'P') {
+                $client = new Client([
+                    'base_uri' => $cluster['endpoint'],
+                    'headers' => [
+                        'Accept' => 'application/json',
+                    ],
+                    'verify' => false,
+                    'timeout' => 0.5
+                ]);     
+            } else {
+                $client = new Client([
+                    'base_uri' => $cluster['endpoint'],
+                    'headers' => [
+                        'Authorization' => "Bearer ". $cluster['token'],
+                        'Accept' => 'application/json',
+                    ],
+                    'verify' => false,
+                    'timeout' => 0.5
+                ]);
+            }
+            $response = $client->get("/api/v1");
+            $online = $response->getStatusCode();
+        } catch (\Exception $e) {
+            $online = -1;
+        }
+
+        return $online;
     }
 
     public function index(): View

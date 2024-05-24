@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ClusterConnectionException;
 use App\Exceptions\ClusterException;
 use App\Http\Requests\DeploymentRequest;
 use App\Models\Cluster;
@@ -22,9 +23,45 @@ class DeploymentController extends Controller
             throw new ClusterException();
 
         $cluster = Cluster::findOrFail(session('clusterId'));
+
+        if ($this->checkConnection($cluster) == -1)
+            throw new ClusterConnectionException();
+
         $this->endpoint = $cluster['endpoint'];
         $this->token = "Bearer " . $cluster['token'];
         $this->timeout  = $cluster['timeout'];
+    }
+
+    private function checkConnection($cluster) {
+        
+        try {
+            if ($cluster['auth_type'] == 'P') {
+                $client = new Client([
+                    'base_uri' => $cluster['endpoint'],
+                    'headers' => [
+                        'Accept' => 'application/json',
+                    ],
+                    'verify' => false,
+                    'timeout' => 0.5
+                ]);     
+            } else {
+                $client = new Client([
+                    'base_uri' => $cluster['endpoint'],
+                    'headers' => [
+                        'Authorization' => "Bearer ". $cluster['token'],
+                        'Accept' => 'application/json',
+                    ],
+                    'verify' => false,
+                    'timeout' => 0.5
+                ]);
+            }
+            $response = $client->get("/api/v1");
+            $online = $response->getStatusCode();
+        } catch (\Exception $e) {
+            $online = -1;
+        }
+
+        return $online;
     }
     
     public function index(Request $request): View
@@ -111,9 +148,38 @@ class DeploymentController extends Controller
 
             $response = $client->get("/apis/apps/v1/namespaces/$namespace/deployments/$id");
 
-            $data = json_decode($response->getBody(), true);
+            $jsonData = json_decode($response->getBody(), true);
+            unset($jsonData['metadata']['managedFields']);
+            $json = json_encode($jsonData, JSON_PRETTY_PRINT);
+            
+            $data = [];
+            // METADATA
+            $data['name'] = isset($jsonData['metadata']['name']) ? $jsonData['metadata']['name'] : '';
+            $data['namespace'] = isset($jsonData['metadata']['namespace']) ? $jsonData['metadata']['namespace'] : '';
+            $data['uid'] = isset($jsonData['metadata']['uid']) ? $jsonData['metadata']['uid'] : '';
+            $data['creationTimestamp'] = isset($jsonData['metadata']['creationTimestamp']) ? $jsonData['metadata']['creationTimestamp'] : '';
+            $data['labels'] = isset($jsonData['metadata']['labels']) ? $jsonData['metadata']['labels'] : null;
+            $data['annotations'] = isset($jsonData['metadata']['annotations']) ? $jsonData['metadata']['annotations'] : null;
+            
+            // SPECS
+            $data['strategy'] = isset($jsonData['spec']['strategy']['type']) ? $jsonData['spec']['strategy']['type'] : '';
+            $data['rollingUpdate'] = isset($jsonData['spec']['strategy']['rollingUpdate']) ? $jsonData['spec']['strategy']['rollingUpdate'] : null;
+            $data['revisionHistoryLimit'] = isset($jsonData['spec']['revisionHistoryLimit']) ? $jsonData['spec']['revisionHistoryLimit'] : '';
+            $data['progressDeadlineSeconds'] = isset($jsonData['spec']['progressDeadlineSeconds']) ? $jsonData['spec']['progressDeadlineSeconds'] : '';
+            $data['selectorMatchLabels'] = isset($jsonData['spec']['selector']['matchLabels']) ? $jsonData['spec']['selector']['matchLabels'] : null;
+                        
+            // TEMPLATE SPEC (CONTAINERS)
+            $data['containers'] = isset($jsonData['spec']['template']['spec']['containers']) ? $jsonData['spec']['template']['spec']['containers'] : '';
+            $data['restartPolicy'] = isset($jsonData['spec']['template']['spec']['restartPolicy']) ? $jsonData['spec']['template']['spec']['restartPolicy'] : '';
+            $data['terminationGracePeriodSeconds'] = isset($jsonData['spec']['template']['spec']['terminationGracePeriodSeconds']) ? $jsonData['spec']['template']['spec']['terminationGracePeriodSeconds'] : '';
 
-            return view('deployments.show', ['deployment' => $data]);
+            // STATUS
+            $data['replicas'] = isset($jsonData['status']['replicas']) ? $jsonData['status']['updatedReplicas'] : 'Unkown';
+            $data['readyReplicas'] = isset($jsonData['status']['readyReplicas']) ? $jsonData['status']['updatedReplicas'] : 'Unkown';
+            $data['availableReplicas'] = isset($jsonData['status']['availableReplicas']) ? $jsonData['status']['updatedReplicas'] : 'Unkown';
+            $data['updatedReplicas'] = isset($jsonData['status']['updatedReplicas']) ? $jsonData['status']['updatedReplicas'] : 'Unkown';
+            
+            return view('deployments.show', ['deployment' => $data, 'json' => $json]);
         } catch (\Exception $e) {
             return view('deployments.show', ['conn_error' => $e->getMessage()]);
         }

@@ -24,7 +24,7 @@
                             <p class="mb-2"><b><u>{{$key}}</u></b>: {{$label}}</p>
                         @endforeach
                         @else
-                            <p class="mb-2">There are no labels on this resource</p>
+                            <p class="mb-2">There are no Labels on this resource</p>
                         @endif
                     </address>
                 </div>
@@ -36,7 +36,7 @@
                             <p class="mb-2"><b><u>{{$key}}</u></b>: {{$annotation}}</p>
                         @endforeach
                         @else
-                            <p class="mb-2">There are no annotations on this resource</p>
+                            <p class="mb-2">There are no Annotations on this resource</p>
                         @endif
                     </address>
                 </div>
@@ -74,7 +74,7 @@
                 <p class="card-description">
                     Shows all information of the Namespace "{{$namespace['name']}}", in an unformatted manner
                 </p>
-                <pre>{{$json}}</pre>
+                <pre id="json">{{$json}}</pre>
             </div>
             @endif
         </div>

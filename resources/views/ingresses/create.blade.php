@@ -12,7 +12,7 @@
             <div class="form-group">
                 <label class="col-sm-3 col-form-label">Name *</label>
                 <div class="col-sm-12">
-                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" placeholder="my-service">
+                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" placeholder="my-ingress">
                     @error("name")
                         <div class="invalid-feedback">
                             {{ $message }}
