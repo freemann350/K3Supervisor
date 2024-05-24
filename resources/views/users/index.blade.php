@@ -44,6 +44,6 @@
   </div>
 </div>
 <div class="d-grid gap-2">
-  <a class="btn btn-success btn-lg btn-block" href="{{ route ('Users.create') }}"><i class="mdi mdi-plus-circle"></i> Add new user</a>
+  <a class="btn btn-success btn-lg btn-block" href="{{ route ('Users.create') }}"><i class="mdi mdi-plus-circle"></i> Add new User</a>
 </div>
 @endsection

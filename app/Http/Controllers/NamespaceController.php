@@ -90,21 +90,21 @@ class NamespaceController extends Controller
             unset($jsonData['metadata']['managedFields']);
             $json = json_encode($jsonData, JSON_PRETTY_PRINT);
             
-            $namespace = [];
+            $data = [];
             // METADATA
-            $namespace['name'] = isset($jsonData['metadata']['name']) ? $jsonData['metadata']['name'] : '';
-            $namespace['uid'] = isset($jsonData['metadata']['uid']) ? $jsonData['metadata']['uid'] : '';
-            $namespace['creationTimestamp'] = isset($jsonData['metadata']['creationTimestamp']) ? $jsonData['metadata']['creationTimestamp'] : '';
-            $namespace['labels'] = isset($jsonData['metadata']['labels']) ? $jsonData['metadata']['labels'] : '';
-            $namespace['annotations'] = isset($jsonData['metadata']['annotations']) ? $jsonData['metadata']['annotations'] : null;
+            $data['name'] = isset($jsonData['metadata']['name']) ? $jsonData['metadata']['name'] : '';
+            $data['uid'] = isset($jsonData['metadata']['uid']) ? $jsonData['metadata']['uid'] : '';
+            $data['creationTimestamp'] = isset($jsonData['metadata']['creationTimestamp']) ? $jsonData['metadata']['creationTimestamp'] : '';
+            $data['labels'] = isset($jsonData['metadata']['labels']) ? $jsonData['metadata']['labels'] : '';
+            $data['annotations'] = isset($jsonData['metadata']['annotations']) ? $jsonData['metadata']['annotations'] : null;
 
             // SPEC (FINALIZERS)
-            $namespace['finalizers'] = isset($jsonData['spec']['finalizers']) ? $jsonData['spec']['finalizers'] : '';
+            $data['finalizers'] = isset($jsonData['spec']['finalizers']) ? $jsonData['spec']['finalizers'] : '';
             
             // STATUS
-            $namespace['status'] = isset($jsonData['status']['phase']) ? $jsonData['status']['phase'] : 'Unkown';
+            $data['status'] = isset($jsonData['status']['phase']) ? $jsonData['status']['phase'] : 'Unkown';
             
-            return view('namespaces.show', ['namespace' => $namespace, 'json' => $json]);
+            return view('namespaces.show', ['namespace' => $data, 'json' => $json]);
         } catch (\Exception $e) {
             dd($e->getMessage());
             return view('namespaces.show', ['conn_error' => $e->getMessage()]);

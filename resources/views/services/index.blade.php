@@ -60,7 +60,7 @@
                     </td>
                     <td>{{$service['type']}}</td>
                     <td>
-                        <a class="btn btn-outline-info btn-fw btn-rounded btn-sm"  href="{{route('Services.show',$service['name'])}}"><i class="mdi mdi-information-outline"></i></a>
+                        <a class="btn btn-outline-info btn-fw btn-rounded btn-sm"  href="{{route('Services.show',[$service['namespace'],$service['name']])}}"><i class="mdi mdi-information-outline"></i></a>
                         @if (!preg_match('/^kube-/', $service['namespace']))
                         <a class="btn btn-outline-danger btn-fw btn-rounded btn-sm" href="#" onclick="_delete('Are you sure you want to delete the Service &quot;{{$service["name"]}}?','{{ route("Services.destroy", [$service['namespace'], $service['name']]) }}')"><i class="mdi mdi-trash-can-outline"></i></a>
                         @endif

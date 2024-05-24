@@ -33,6 +33,7 @@
                             </div>
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item"><p class="text-center"><b>{{$node['ip']}}</b></p></li>
+                                <li class="list-group-item"><p class="text-center"><b>{{$node['podCidr']}} (pods)</b></p></li>
                                 <li class="list-group-item"><p class="text-center"><b>{{$node['cpus']}} CPUs ({{$node['arch']}})</b></p></li>
                                 <li class="list-group-item"><p class="text-center"><b>~{{$node['memory']}}GBs</b></p></li>
                             </ul>
@@ -47,7 +48,7 @@
     <div class="col-sm-4 mb-4">
         <div class="card h-100">
             <div class="card-header">
-                Total Resources
+                Total Resources ({{$resources['namespaces'] + $resources['pods'] + $resources['deployments'] + $resources['services'] + $resources['ingresses']}})
             </div>
             <div class="card-body">
                 <canvas id="totalResources"></canvas>

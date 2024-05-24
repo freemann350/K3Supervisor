@@ -7,6 +7,7 @@ use App\Models\Cluster;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use GuzzleHttp\Promise;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,11 +19,13 @@ class ClusterController extends Controller
     public function index(): View
     {
         $clusters = Auth::user()->clusters;
-        if ($clusters->isEmpty())
+        if ($clusters->isEmpty()) {
             $clusters = null;
-       
+        }
+
         if ($clusters != null) {
-            foreach($clusters as $cluster) {
+            $promises = [];
+            foreach ($clusters as $cluster) {
                 if ($cluster['auth_type'] == 'P') {
                     $client = new Client([
                         'base_uri' => $cluster['endpoint'],
@@ -36,23 +39,30 @@ class ClusterController extends Controller
                     $client = new Client([
                         'base_uri' => $cluster['endpoint'],
                         'headers' => [
-                            'Authorization' => "Bearer ". $cluster['token'],
+                            'Authorization' => "Bearer " . $cluster['token'],
                             'Accept' => 'application/json',
                         ],
                         'verify' => false,
                         'timeout' => 0.5
                     ]);
                 }
-                
-                try {
-                    $response = $client->get("/api/v1");
-                    $cluster['online'] = $response->getStatusCode();
-                } catch (\Exception $e) {
+
+                $promises[$cluster->id] = $client->getAsync("/api/v1");
+            }
+
+            $responses = Promise\Utils::settle($promises)->wait();
+
+            foreach ($clusters as $cluster) {
+                $result = $responses[$cluster->id];
+                if ($result['state'] === 'fulfilled') {
+                    $cluster['online'] = $result['value']->getStatusCode();
+                } else {
                     $cluster['online'] = null;
                 }
             }
         }
-        return view("clusters.index",['clusters' => $clusters]);
+
+        return view("clusters.index", ['clusters' => $clusters]);
     }
 
     public function selectCluster($id): RedirectResponse

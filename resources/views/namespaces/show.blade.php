@@ -19,7 +19,7 @@
                 <div class="col-md-4">
                     <address>
                         <h4 class="card-title">Labels</h4>
-                        @if (isset($namespace['annotations']))
+                        @if (isset($namespace['labels']))
                         @foreach ($namespace['labels'] as $key => $label)
                             <p class="mb-2"><b><u>{{$key}}</u></b>: {{$label}}</p>
                         @endforeach
@@ -58,9 +58,7 @@
                 <div class="col-md-6">
                     <address>
                     <h4 class="card-title">Status</h4>
-                    <p class="fw-bold text-primary">
-                        <p class="mb-2"><b>{{$namespace['status']}}</b></p>
-                    </p>
+                    <p class="mb-2"><b><u>Phase</u></b>: {{$namespace['status']}}</p>
                     </address>
                 </div>
             </div>

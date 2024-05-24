@@ -64,6 +64,7 @@ class DashboardController extends Controller
                         $data['ip'] = null;
                     }
                 }
+                $data['podCidr'] = $jsonData['spec']['podCIDR'];
                 $data['cpus'] =  $jsonData['status']['capacity']['cpu'];
                 $data['arch'] =  $jsonData['metadata']['labels']['beta.kubernetes.io/arch'];
                 $data['memory'] =  $jsonData['status']['capacity']['memory'];

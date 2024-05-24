@@ -50,7 +50,7 @@
                     <td>{{$deployment['replicas']}}&nbsp;</td>
                     <td>{{$deployment['totalContainers']}}&nbsp;</td>
                     <td>
-                        <a class="btn btn-outline-info btn-fw btn-rounded btn-sm"  href="{{route('Deployments.show',$deployment['name'])}}"><i class="mdi mdi-information-outline"></i></a>
+                        <a class="btn btn-outline-info btn-fw btn-rounded btn-sm"  href="{{route('Deployments.show',[$deployment['namespace'],$deployment['name']])}}"><i class="mdi mdi-information-outline"></i></a>
                         @if (!preg_match('/^kube-/', $deployment['namespace']))
                         <a class="btn btn-outline-danger btn-fw btn-rounded btn-sm" href="#" onclick="_delete('Are you sure you want to delete the Deployment &quot;{{$deployment["name"]}}?','{{ route("Deployments.destroy", [$deployment['namespace'], $deployment['name']]) }}')"><i class="mdi mdi-trash-can-outline"></i></a>
                         @endif

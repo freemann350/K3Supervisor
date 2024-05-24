@@ -107,9 +107,31 @@ class PodController extends Controller
 
             $response = $client->get("/api/v1/namespaces/$namespace/pods/$id");
 
-            $data = json_decode($response->getBody(), true);
-
-            return view('pods.show', ['pod' => $data]);
+            $jsonData = json_decode($response->getBody(), true);
+            unset($jsonData['metadata']['managedFields']);
+            $json = json_encode($jsonData, JSON_PRETTY_PRINT);
+            
+            $data = [];
+            // METADATA
+            $data['name'] = isset($jsonData['metadata']['name']) ? $jsonData['metadata']['name'] : '';
+            $data['namespace'] = isset($jsonData['metadata']['namespace']) ? $jsonData['metadata']['namespace'] : '';
+            $data['uid'] = isset($jsonData['metadata']['uid']) ? $jsonData['metadata']['uid'] : '';
+            $data['creationTimestamp'] = isset($jsonData['metadata']['creationTimestamp']) ? $jsonData['metadata']['creationTimestamp'] : '';
+            $data['labels'] = isset($jsonData['metadata']['labels']) ? $jsonData['metadata']['labels'] : '';
+            $data['annotations'] = isset($jsonData['metadata']['annotations']) ? $jsonData['metadata']['annotations'] : null;
+            
+            // SPEC (CONTAINERS)
+            $data['containers'] = isset($jsonData['spec']['containers']) ? $jsonData['spec']['containers'] : '';
+            $data['restartPolicy'] = isset($jsonData['spec']['restartPolicy']) ? $jsonData['spec']['restartPolicy'] : '';
+            $data['terminationGracePeriodSeconds'] = isset($jsonData['spec']['terminationGracePeriodSeconds']) ? $jsonData['spec']['terminationGracePeriodSeconds'] : '';
+            $data['nodeName'] = isset($jsonData['spec']['nodeName']) ? $jsonData['spec']['nodeName'] : '';
+            
+            // STATUS
+            $data['status'] = isset($jsonData['status']['phase']) ? $jsonData['status']['phase'] : 'Unkown';
+            $data['hostIp'] = isset($jsonData['status']['hostIP']) ? $jsonData['status']['hostIP'] : 'Unkown';
+            $data['podIp'] = isset($jsonData['status']['podIP']) ? $jsonData['status']['podIP'] : 'Unkown';
+            
+            return view('pods.show', ['pod' => $data, 'json' => $json]);
         } catch (\Exception $e) {
             return view('pods.show', ['conn_error' => $e->getMessage()]);
         }

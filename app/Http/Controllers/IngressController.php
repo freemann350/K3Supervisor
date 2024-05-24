@@ -122,7 +122,7 @@ class IngressController extends Controller
 
             $data = json_decode($response->getBody(), true);
 
-            return view('ingresses.show', ['ingresses' => $data]);
+            return view('ingresses.show', ['ingress' => $data]);
         } catch (\Exception $e) {
             return view('ingresses.show', ['conn_error' => $e->getMessage()]);
         }

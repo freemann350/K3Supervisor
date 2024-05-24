@@ -3,9 +3,9 @@
 <div class="col-md-12 grid-margin stretch-card">
     <div class="card">
         <div class="card-body">
-            <h4 class="card-title">Add new Service</h4>
+            <h4 class="card-title">Add new Ingress</h4>
             <p class="card-description">
-                Here you can add a new Service
+                Here you can add a new Ingress
             </p>
             <form method="POST" action="{{route('Ingresses.store')}}">
             @csrf

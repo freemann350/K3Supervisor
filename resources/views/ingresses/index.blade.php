@@ -63,7 +63,7 @@
                     @endforeach
                     </td>
                     <td>
-                        <a class="btn btn-outline-info btn-fw btn-rounded btn-sm"  href="{{route('Ingresses.show',$ingress['name'])}}"><i class="mdi mdi-information-outline"></i></a>
+                        <a class="btn btn-outline-info btn-fw btn-rounded btn-sm"  href="{{route('Ingresses.show',[$ingress['namespace'],$ingress['name']])}}"><i class="mdi mdi-information-outline"></i></a>
                         @if (!preg_match('/^kube-/', $ingress['namespace']))
                         <a class="btn btn-outline-danger btn-fw btn-rounded btn-sm" href="#" onclick="_delete('Are you sure you want to delete the Ingress &quot;{{$ingress["name"]}}?','{{ route("Ingresses.destroy", [$ingress['namespace'], $ingress['name']]) }}')"><i class="mdi mdi-trash-can-outline"></i></a>
                         @endif

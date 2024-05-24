@@ -172,11 +172,15 @@
     <script src="{{ url('js/main/off-canvas.js') }} "></script>
     <script src="{{ url('js/main/hoverable-collapse.js') }}"></script>
     <script src="{{ url('js/main/template.js') }}"></script>
-    <script src="{{ url('js/main/datatables.min.js') }}"></script>
     <script src="{{ url('js/main/jquery.min.js') }}"></script>
+    @if (str_contains(Route::currentRouteName(),'.index') || Route::currentRouteName() == 'Dashboard')
+    <script src="{{ url('js/main/datatables.min.js') }}"></script>
+    @endif
     <script src="{{ url('js/main/toastr.min.js') }}"></script>
     <script src="{{ url('js/main/sweetalert2@11.js') }}"></script>
+    @if (Route::currentRouteName() == 'Dashboard')
     <script src="{{ url('js/main/chart.js') }}"></script>
+    @endif
 
     <script>
         let table = new DataTable('#dt', {});

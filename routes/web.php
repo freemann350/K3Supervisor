@@ -64,22 +64,26 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(PodController::class)->group(function () {
-        Route::resource('/Pods',PodController::class)->except(['edit','update','destroy']);
+        Route::resource('/Pods',PodController::class)->except(['edit','update','destroy','show']);
+        Route::get('/Pods/{Namespace}/{Pod}','show')->name("Pods.show");
         Route::delete('/Pods/{Namespace}/{Pod}','destroy')->name("Pods.destroy");
     });
 
     Route::controller(DeploymentController::class)->group(function () {
-        Route::resource('/Deployments',DeploymentController::class)->except(['edit','update','destroy']);
+        Route::resource('/Deployments',DeploymentController::class)->except(['edit','update','destroy','show']);
+        Route::get('/Deployments/{Namespace}/{Deployment}','show')->name("Deployments.show");
         Route::delete('/Deployments/{Namespace}/{Deployment}','destroy')->name("Deployments.destroy");
     });
 
     Route::controller(ServiceController::class)->group(function () {
-        Route::resource('/Services',ServiceController::class)->except(['edit','update','destroy']);
+        Route::resource('/Services',ServiceController::class)->except(['edit','update','destroy','show']);
+        Route::get('/Services/{Namespace}/{Service}','show')->name("Services.show");
         Route::delete('/Services/{Namespace}/{Service}','destroy')->name("Services.destroy");
     });
 
     Route::controller(IngressController::class)->group(function () {
-        Route::resource('/Ingresses',IngressController::class)->except(['edit','update','destroy']);
+        Route::resource('/Ingresses',IngressController::class)->except(['edit','update','destroy','show']);
+        Route::get('/Ingresses/{Namespace}/{Ingress}','show')->name("Ingresses.show");
         Route::delete('/Ingresses/{Namespace}/{Ingress}','destroy')->name("Ingresses.destroy");
     });
 });
