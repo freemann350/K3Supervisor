@@ -12,7 +12,7 @@
                     @foreach ($nodes as $node)
                     <div class="col mb-4">
                         <div class="card h-100">
-                            <div class="card-header {{$node['master'] ? 'text-white bg-dark' : ''}} text-center">{{$node['name']}}</div>
+                            <div class="card-header {{$node['master'] ? 'text-white bg-dark' : ''}} text-center">{{$node['name']}}<br><h6 class="text-muted">{{isset($node['status']) && $node['status'] == 'True' ? "Online" : "Offline"}}</h6></div>
                             <?php
                                 switch(true) {
                                     case(preg_match('/\bdebian\b/i', $node['os'])):

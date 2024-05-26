@@ -107,6 +107,14 @@ class DashboardController extends Controller
                 $data['memory'] =  $jsonData['status']['capacity']['memory'];
                 $data['memory'] = intval(str_replace('Ki','',$data['memory']));
                 $data['memory'] = round($data['memory']/1000000);
+
+                if (isset($jsonData['status']['conditions'])) {
+                    foreach ($jsonData['status']['conditions'] as $status) {
+                        if ($status['type'] == 'Ready')
+                            $data['status'] = $status['status'];
+                    } 
+                }
+                
                 $nodes[] = $data;
             }
 

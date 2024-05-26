@@ -295,7 +295,6 @@
             <button type="submit" class="btn btn-primary btn-fw">Submit</button>
             </form>
         </div>
-        {{--dd($errors->all())--}}
     </div>
 </div>
 @endsection

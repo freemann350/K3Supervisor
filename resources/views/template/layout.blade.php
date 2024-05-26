@@ -129,6 +129,12 @@
                                 <span class="menu-title">Ingresses</span>
                             </a>
                         </li>
+                        <li class="nav-item {{ str_contains(Route::currentRouteName(),'Backups.') ? 'active' : '' }}">
+                            <a class="nav-link" href="{{route("Backups.index")}}">
+                                <i class="menu-icon mdi mdi-content-save-all"></i>
+                                <span class="menu-title">Backup Resources</span>
+                            </a>
+                        </li>
                     </li>
                     @endif
                     <li class="nav-item nav-category"></li>

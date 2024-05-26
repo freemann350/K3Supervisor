@@ -9,7 +9,7 @@ This project was developed using [K3S](https://k3s.io) due to its ease of use an
 
 It is **HIGHLY RECOMMENDED** to use this app with configured with authentication to the API without the use of *kubectl proxy*. Use this [official Kubernetes guide](https://kubernetes.io/docs/tasks/administer-cluster/access-cluster-api/?amp;amp#without-kubectl-proxy) to deploy the API with (TOKEN) authentication
 
-UI Based on my previous project, [MikroKontrol](https://https://github.com/freemann350/MikroKontrol).
+UI Based on my previous project, [MikroKontrol](https://github.com/freemann350/MikroKontrol).
 
 ## Features:
 
@@ -63,5 +63,4 @@ UI Based on my previous project, [MikroKontrol](https://https://github.com/freem
     - [ ] Volumes
 
 - Extras
-  - [ ] Backups
   - [ ] User Access Control

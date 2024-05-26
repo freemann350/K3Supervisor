@@ -143,7 +143,6 @@ class NamespaceController extends Controller
             
             return view('namespaces.show', ['namespace' => $data, 'json' => $json]);
         } catch (\Exception $e) {
-            dd($e->getMessage());
             return view('namespaces.show', ['conn_error' => $e->getMessage()]);
         }
     }

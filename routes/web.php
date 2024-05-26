@@ -11,6 +11,7 @@ use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\BackupController;
 use App\Http\Middleware\AdminMiddleware;
 
 Route::get('/testing', function () {
@@ -85,5 +86,9 @@ Route::middleware('auth')->group(function () {
         Route::resource('/Ingresses',IngressController::class)->except(['edit','update','destroy','show']);
         Route::get('/Ingresses/{Namespace}/{Ingress}','show')->name("Ingresses.show");
         Route::delete('/Ingresses/{Namespace}/{Ingress}','destroy')->name("Ingresses.destroy");
+    });
+
+    Route::controller(BackupController::class)->group(function () {
+        Route::resource('/Backups',BackupController::class)->only(['index','store']);
     });
 });
