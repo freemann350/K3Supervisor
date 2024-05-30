@@ -157,7 +157,19 @@
                                         {{ $message }}
                                     </div>
                                 @enderror
-                                <div>
+                                <div class="form-group">
+                                    <label class="col-form-label">Image Pull Policy *</label>
+                                    <select class="form-select @error("containers.$index.imagePullPolicy") is-invalid @enderror" name="imagePullPolicy">
+                                        <option {{$key['imagePullPolicy'] == "Always" ? 'selected' : ''}} value="Always">Always</option> 
+                                        <option {{$key['imagePullPolicy'] == "IfNotPresent" ? 'selected' : ''}} value="IfNotPresent">IfNotPresent</option> 
+                                        <option {{$key['imagePullPolicy'] == "Never" ? 'selected' : ''}} value="Never">Never</option> 
+                                    </select>
+                                    @error("containers.$index.imagePullPolicy")
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
                                     <h6>Ports</h6>
                                     <button type="button" class="btn btn-dark" onclick="addPort({{$index}})">Add Port</button>
                                     <div id="ports-{{$index}}">

@@ -94,6 +94,10 @@ class DeploymentRequest extends FormRequest
             'containers.*.image' => [
                 'required',
             ],
+            'containers.*.imagePullPolicy' => [
+                'required',
+                'in:IfNotPresent,Always,Never'
+            ],
             'containers.*.ports.*' => [
                 'required',
                 'regex:/^([0-9]+)$/'
@@ -172,6 +176,8 @@ class DeploymentRequest extends FormRequest
             'containers.*.name.required' => 'The container name is required.',
             'containers.*.name.regex' => 'The container name must be a valid DNS subdomain.',
             'containers.*.image.required' => 'The container image is required.',
+            'containers.*.imagePullPolicy.required' => 'The container image pull policy is required.',
+            'containers.*.imagePullPolicy.in' => 'The container image pull policy one of the following: IfNotPresent, Always, Never',
             'containers.*.ports.*.required' => 'The container port is required.',
             'containers.*.ports.*.regex' => 'The container port must be a number.',
             'containers.*.env.key.*.required' => 'The environment variable key is required.',

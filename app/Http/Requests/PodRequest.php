@@ -60,6 +60,10 @@ class PodRequest extends FormRequest
             'containers.*.image' => [
                 'required',
             ],
+            'containers.*.imagePullPolicy' => [
+                'required',
+                'in:IfNotPresent,Always,Never'
+            ],
             'containers.*.ports.*' => [
                 'required',
                 'regex:/^([0-9]+)$/'

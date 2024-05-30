@@ -39,6 +39,14 @@
                             <label class="col-form-label">Container image *</label>
                             <input type="text" name="containers[${containerCount}][image]" class="form-control" placeholder="my-container">
                         </div>
+                        <div class="form-group">
+                            <label class="col-form-label">Image Pull Policy *</label>
+                            <select class="form-select" name="containers[${containerCount}][imagePullPolicy]">
+                                <option value="Always">Always</option> 
+                                <option value="IfNotPresent">IfNotPresent</option> 
+                                <option value="Never">Never</option> 
+                            </select>
+                        </div>
                         <div>
                             <h6>Ports</h6>
                             <button type="button" class="btn btn-dark" onclick="addPort(${containerCount})">Add Port</button>

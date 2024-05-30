@@ -77,6 +77,7 @@
                             <h4 class="card-title">Main Info</h4>
                             <p class="mb-2"><b><u>Name:</u></b> {{ isset($container['name']) ? $container['name'] : '-'}}</p>
                             <p class="mb-2"><b><u>Image:</u></b> {{ isset($container['image']) ? $container['image'] : '-'}}</p>
+                            <p class="mb-2"><b><u>Image Pull Policy:</u></b> {{ isset($container['imagePullPolicy']) ? $container['imagePullPolicy'] : '-'}}</p>
                         </address>
                     </div>
                     <div class="col">

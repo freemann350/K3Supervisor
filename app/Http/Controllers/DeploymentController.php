@@ -238,6 +238,7 @@ class DeploymentController extends Controller
                 // MAIN INFO
                 $arr_container['name'] = $container['name'];
                 $arr_container['image'] = $container['image'];
+                $arr_container['imagePullPolicy'] = $container['imagePullPolicy'];
                 
                 // PORTS
                 if (isset($container['ports'])) {

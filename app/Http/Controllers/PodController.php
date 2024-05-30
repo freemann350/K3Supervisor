@@ -226,6 +226,7 @@ class PodController extends Controller
                 $arr_container = [];
                 $arr_container['name'] = $container['name'];
                 $arr_container['image'] = $container['image'];
+                $arr_container['imagePullPolicy'] = $container['imagePullPolicy'];
                 
                 if (isset($container['ports'])) {
                     $arr_container['ports'] = [];
