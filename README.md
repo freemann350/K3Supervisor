@@ -174,8 +174,8 @@ This command exposes the API on all network interfaces (`--address='0.0.0.0'`), 
 
 ### Access with Auth Token (Recommended)
 
-You might prefer Bearer token authentication over defining a proxy to access the cluster.
-For that you can follow the [Access Clusters Using the Kubernetes API Kubernetes](https://kubernetes.io/docs/tasks/administer-cluster/access-cluster-api/?amp;amp#without-kubectl-proxy) docs page to set it up.
+It is preferable to use a Bearer token authentication over defining a proxy to access the cluster due to the safety it provides.
+For that you can follow the [Access Clusters Using the Kubernetes API](https://kubernetes.io/docs/tasks/administer-cluster/access-cluster-api/?amp;amp#without-kubectl-proxy) Kubernetes docs page to set it up.
 
 At the time of development, this was the official configuration used:
 
