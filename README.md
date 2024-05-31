@@ -42,7 +42,6 @@ UI Based on my previous project, [MikroKontrol](https://github.com/freemann350/M
 - Platform roles
 
   - Verbs
-    - get
     - create
     - delete
   - Resources
@@ -52,15 +51,9 @@ UI Based on my previous project, [MikroKontrol](https://github.com/freemann350/M
     - deployments
     - services
     - ingresses
+    - custom
 
 # ToDo
-
-- Pods
-  - [x] Create/Store
-    - [ ] Volumes
-- Deployments
-  - [x] Create/Store
-    - [ ] Volumes
 
 - Extras
   - [ ] User Access Control

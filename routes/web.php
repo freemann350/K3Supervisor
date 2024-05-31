@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BackupController;
+use App\Http\Controllers\CustomResourceController;
 use App\Http\Middleware\AdminMiddleware;
 
 Route::get('/testing', function () {
@@ -90,5 +91,9 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(BackupController::class)->group(function () {
         Route::resource('/Backups',BackupController::class)->only(['index','store']);
+    });
+
+    Route::controller(CustomResourceController::class)->group(function () {
+        Route::resource('/CustomResource',CustomResourceController::class)->only(['index','store']);
     });
 });

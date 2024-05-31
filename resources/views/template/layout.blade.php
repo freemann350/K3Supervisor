@@ -129,6 +129,12 @@
                                 <span class="menu-title">Ingresses</span>
                             </a>
                         </li>
+                        <li class="nav-item {{ str_contains(Route::currentRouteName(),'CustomResource.') ? 'active' : '' }}">
+                            <a class="nav-link" href="{{route("CustomResource.index")}}">
+                                <i class="menu-icon mdi mdi-clipboard-plus"></i>
+                                <span class="menu-title">Create Resource</span>
+                            </a>
+                        </li>
                         <li class="nav-item {{ str_contains(Route::currentRouteName(),'Backups.') ? 'active' : '' }}">
                             <a class="nav-link" href="{{route("Backups.index")}}">
                                 <i class="menu-icon mdi mdi-content-save-all"></i>
@@ -220,6 +226,10 @@
 
     @if (Route::currentRouteName() == 'Ingresses.create')
         @include('template/resource_creation/createIngress')
+    @endif
+
+    @if (Route::currentRouteName() == 'CustomResource.index')
+        @include('template/scripts/prettyPrint')
     @endif
 
     @if (isset($json))

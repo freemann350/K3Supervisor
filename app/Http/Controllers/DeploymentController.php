@@ -293,8 +293,6 @@ class DeploymentController extends Controller
             
             $jsonData = json_encode($data);
 
-
-
             $client = new Client([
                 'base_uri' => $this->endpoint,
                 'headers' => [
