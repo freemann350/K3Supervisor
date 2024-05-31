@@ -16,6 +16,8 @@
                   <th>Name</th>
                   <th>Email</th>
                   <th>Role</th>
+                  <th>Resources</th>
+                  <th>Verbs</th>
                   <th>Actions</th>
               </tr>
               </thead>
@@ -26,6 +28,8 @@
                 <td>{{$user['name']}}</td>
                 <td>{{$user['email']}}</td>
                 <td>{{$user['role']}}</td>
+                <td>{{$user['resources']}}</td>
+                <td>{{$user['verbs']}}</td>
                 <td>
                     <a class="btn btn-outline-dark btn-fw btn-rounded btn-sm"  href="{{$user['id'] == Auth::user()->id ? route('Users.editMe') : route('Users.edit',$user['id'])}}"><i class="mdi mdi-pencil"></i></a>
                     @if (Auth::user()->id != $user['id'])
