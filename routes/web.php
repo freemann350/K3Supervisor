@@ -14,6 +14,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\BackupController;
 use App\Http\Controllers\CustomResourceController;
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\ResourceControlMiddleware;
 
 Route::get('/testing', function () {
     return view('welcome');
@@ -62,38 +63,52 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(NamespaceController::class)->group(function () {
-        Route::resource('/Namespaces',NamespaceController::class)->except(['edit','update']);
+        Route::get('/Namespaces','index')->name("Namespaces.index");
+        Route::get('/Namespaces/New','create')->name("Namespaces.create")->middleware(ResourceControlMiddleware::class);
+        Route::get('/Namespaces/{namespace}','show')->name("Namespaces.show");
+        Route::post('/Namespaces/Store','store')->name("Namespaces.store")->middleware(ResourceControlMiddleware::class);
+        Route::delete('/Namespaces/{namespace}','destroy')->name("Namespaces.destroy")->middleware(ResourceControlMiddleware::class);
     });
 
     Route::controller(PodController::class)->group(function () {
-        Route::resource('/Pods',PodController::class)->except(['edit','update','destroy','show']);
+        Route::get('/Pods','index')->name("Pods.index");
+        Route::get('/Pods/New','create')->name("Pods.create")->middleware(ResourceControlMiddleware::class);
         Route::get('/Pods/{Namespace}/{Pod}','show')->name("Pods.show");
-        Route::delete('/Pods/{Namespace}/{Pod}','destroy')->name("Pods.destroy");
+        Route::post('/Pods/Store','store')->name("Pods.store")->middleware(ResourceControlMiddleware::class);
+        Route::delete('/Pods/{Namespace}/{Pod}','destroy')->name("Pods.destroy")->middleware(ResourceControlMiddleware::class);
     });
 
     Route::controller(DeploymentController::class)->group(function () {
-        Route::resource('/Deployments',DeploymentController::class)->except(['edit','update','destroy','show']);
+        Route::get('/Deployments','index')->name("Deployments.index");
+        Route::get('/Deployments/New','create')->name("Deployments.create")->middleware(ResourceControlMiddleware::class);
         Route::get('/Deployments/{Namespace}/{Deployment}','show')->name("Deployments.show");
-        Route::delete('/Deployments/{Namespace}/{Deployment}','destroy')->name("Deployments.destroy");
+        Route::post('/Deployments/Store','store')->name("Deployments.store")->middleware(ResourceControlMiddleware::class);
+        Route::delete('/Deployments/{Namespace}/{Deployment}','destroy')->name("Deployments.destroy")->middleware(ResourceControlMiddleware::class);
     });
 
     Route::controller(ServiceController::class)->group(function () {
-        Route::resource('/Services',ServiceController::class)->except(['edit','update','destroy','show']);
+        Route::get('/Services','index')->name("Services.index");
+        Route::get('/Services/New','create')->name("Services.create")->middleware(ResourceControlMiddleware::class);
         Route::get('/Services/{Namespace}/{Service}','show')->name("Services.show");
-        Route::delete('/Services/{Namespace}/{Service}','destroy')->name("Services.destroy");
+        Route::post('/Services/Store','store')->name("Services.store")->middleware(ResourceControlMiddleware::class);
+        Route::delete('/Services/{Namespace}/{Service}','destroy')->name("Services.destroy")->middleware(ResourceControlMiddleware::class);
     });
 
     Route::controller(IngressController::class)->group(function () {
-        Route::resource('/Ingresses',IngressController::class)->except(['edit','update','destroy','show']);
+        Route::get('/Ingresses','index')->name("Ingresses.index");
+        Route::get('/Ingresses/New','create')->name("Ingresses.create")->middleware(ResourceControlMiddleware::class);
         Route::get('/Ingresses/{Namespace}/{Ingress}','show')->name("Ingresses.show");
-        Route::delete('/Ingresses/{Namespace}/{Ingress}','destroy')->name("Ingresses.destroy");
+        Route::post('/Ingresses/Store','store')->name("Ingresses.store")->middleware(ResourceControlMiddleware::class);
+        Route::delete('/Ingresses/{Namespace}/{Ingress}','destroy')->name("Ingresses.destroy")->middleware(ResourceControlMiddleware::class);
     });
 
     Route::controller(BackupController::class)->group(function () {
-        Route::resource('/Backups',BackupController::class)->only(['index','store']);
+        Route::get('/Backups','index')->name("Backups.index")->middleware(ResourceControlMiddleware::class);
+        Route::post('/Backups','store')->name("Backups.store")->middleware(ResourceControlMiddleware::class);
     });
 
     Route::controller(CustomResourceController::class)->group(function () {
-        Route::resource('/CustomResource',CustomResourceController::class)->only(['index','store']);
+        Route::get('/CustomResources','index')->name("CustomResources.index")->middleware(ResourceControlMiddleware::class);
+        Route::post('/CustomResources','store')->name("CustomResources.store")->middleware(ResourceControlMiddleware::class);
     });
 });

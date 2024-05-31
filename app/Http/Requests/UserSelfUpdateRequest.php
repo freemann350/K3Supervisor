@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UserSelfUpdateRequest extends FormRequest
 {
@@ -27,7 +28,8 @@ class UserSelfUpdateRequest extends FormRequest
             ],
             'email' => [
                 "required",
-                "email"
+                "email",
+                Rule::unique('users')->ignore($user->id),
             ]
         ];
     }

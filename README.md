@@ -42,18 +42,14 @@ UI Based on my previous project, [MikroKontrol](https://github.com/freemann350/M
 - Platform roles
 
   - Verbs
-    - create
-    - delete
+    - Create
+    - Delete
   - Resources
-    - nodes
-    - namespaces
-    - pods
-    - deployments
-    - services
-    - ingresses
-    - custom
-
-# ToDo
-
-- Extras
-  - [ ] User Access Control
+    - Nodes
+    - Mamespaces
+    - Pods
+    - Deployments
+    - Services
+    - Ingresses
+    - Custom Resources
+    - Backups

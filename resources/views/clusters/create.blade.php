@@ -7,6 +7,8 @@
             <h4 class="card-title">Add new Cluster</h4>
             <p class="card-description">
                 Here you can add a new Kubernetes Cluster
+                <br>
+                If you want to use a Token, check the documentation guide to <a href="https://kubernetes.io/docs/tasks/administer-cluster/access-cluster-api/?amp;amp#without-kubectl-proxy">Access Clusters Using the Kubernetes API</a>.
             </p>
             <form method="POST" action="{{route('Clusters.store')}}" enctype="multipart/form-data">
             @csrf

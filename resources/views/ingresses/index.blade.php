@@ -64,8 +64,10 @@
                     </td>
                     <td>
                         <a class="btn btn-outline-info btn-fw btn-rounded btn-sm"  href="{{route('Ingresses.show',[$ingress['namespace'],$ingress['name']])}}"><i class="mdi mdi-information-outline"></i></a>
+                        @if ((Auth::user()->resources == '*' || str_contains(Auth::user()->resources,'Ingresses')) && (Auth::user()->verbs == '*' || str_contains(Auth::user()->verbs,'delete')) )
                         @if (!preg_match('/^kube-/', $ingress['namespace']))
                         <a class="btn btn-outline-danger btn-fw btn-rounded btn-sm" href="#" onclick="_delete('Are you sure you want to delete the Ingress &quot;{{$ingress["name"]}}?','{{ route("Ingresses.destroy", [$ingress['namespace'], $ingress['name']]) }}')"><i class="mdi mdi-trash-can-outline"></i></a>
+                        @endif
                         @endif
                     </td>
                 </tr>
@@ -85,8 +87,10 @@
     </div>
 </div>
 @if (isset($ingresses))
+@if ((Auth::user()->resources == '*' || str_contains(Auth::user()->resources,'Ingresses')) && (Auth::user()->verbs == '*' || str_contains(Auth::user()->verbs,'create')) )
 <div class="d-grid gap-2">
   <a class="btn btn-success btn-lg btn-block" href="{{ route('Ingresses.create') }}"><i class="mdi mdi-plus-circle"></i> Add new Ingress</a>
 </div>
+@endif
 @endif
 @endsection

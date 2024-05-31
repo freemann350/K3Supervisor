@@ -9,7 +9,7 @@
                 <br>
                 Check the <a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#endpoints-v1-core">Kubernetes API Documentation</a> for the correct parameters
             </p>
-            <form method="POST" action="{{route('CustomResource.store')}}">
+            <form method="POST" action="{{route('CustomResources.store')}}">
             @csrf
             <div class="form-group">
                 <textarea class="form-control" name="resource" id="resource">{{old('resource')}}</textarea>

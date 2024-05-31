@@ -33,7 +33,47 @@ class UserUpdateRequest extends FormRequest
                 "nullable",
                 "string",
                 "in:A,U"
-            ]
+            ],
+            
+            // RESOURCES
+            'namespaces' => [
+                "nullable",
+                'in:true'
+            ],
+            'pods' => [
+                "nullable",
+                'in:true'
+            ],
+            'deployments' => [
+                "nullable",
+                'in:true'
+            ],
+            'services' => [
+                "nullable",
+                'in:true'
+            ],
+            'ingresses' => [
+                "nullable",
+                'in:true'
+            ],
+            'customresources' => [
+                "nullable",
+                'in:true'
+            ],
+            'backups' => [
+                "nullable",
+                'in:true'
+            ],
+
+            // VERBS
+            'create' => [
+                "nullable",
+                'in:true'
+            ],
+            'delete' => [
+                "nullable",
+                'in:true'
+            ],
         ];
     }
 }

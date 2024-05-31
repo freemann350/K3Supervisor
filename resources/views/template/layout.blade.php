@@ -129,18 +129,22 @@
                                 <span class="menu-title">Ingresses</span>
                             </a>
                         </li>
+                        @if (Auth::user()->resources == '*' || str_contains(Auth::user()->resources,'CustomResource'))
                         <li class="nav-item {{ str_contains(Route::currentRouteName(),'CustomResource.') ? 'active' : '' }}">
-                            <a class="nav-link" href="{{route("CustomResource.index")}}">
+                            <a class="nav-link" href="{{route("CustomResources.index")}}">
                                 <i class="menu-icon mdi mdi-clipboard-plus"></i>
                                 <span class="menu-title">Create Resource</span>
                             </a>
                         </li>
+                        @endif
+                        @if (Auth::user()->resources == '*' || str_contains(Auth::user()->resources,'Backups'))
                         <li class="nav-item {{ str_contains(Route::currentRouteName(),'Backups.') ? 'active' : '' }}">
                             <a class="nav-link" href="{{route("Backups.index")}}">
                                 <i class="menu-icon mdi mdi-content-save-all"></i>
                                 <span class="menu-title">Backup Resources</span>
                             </a>
                         </li>
+                        @endif
                     </li>
                     @endif
                     <li class="nav-item nav-category"></li>

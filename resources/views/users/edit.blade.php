@@ -48,6 +48,68 @@
                     @enderror
                 </div>
             </div>
+            <div class="form-group">
+                <label class="col-sm-3 col-form-label">Resources</label>
+                <div class="col-sm-12">
+                    <div class="form-check form-check-flat form-check-primary">
+                        <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" name="namespaces" value="true" {{$user['resources'] == '[*]' || str_contains($user['resources'],"Namespaces") ? 'checked' : ''}}>
+                        Namespaces
+                        <i class="input-helper"></i></label>
+                    </div>
+                    <div class="form-check form-check-flat form-check-primary">
+                        <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" name="pods" value="true" {{$user['resources'] == '[*]' || str_contains($user['resources'],"Pods") ? 'checked' : ''}}>
+                        Pods
+                        <i class="input-helper"></i></label>
+                    </div>
+                    <div class="form-check form-check-flat form-check-primary">
+                        <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" name="deployments" value="true" {{$user['resources'] == '[*]' || str_contains($user['resources'],"Deployments") ? 'checked' : ''}}>
+                        Deployments
+                        <i class="input-helper"></i></label>
+                    </div>
+                    <div class="form-check form-check-flat form-check-primary">
+                        <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" name="services" value="true" {{$user['resources'] == '[*]' || str_contains($user['resources'],"Services") ? 'checked' : ''}}>
+                        Services
+                        <i class="input-helper"></i></label>
+                    </div>
+                    <div class="form-check form-check-flat form-check-primary">
+                        <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" name="ingresses" value="true" {{$user['resources'] == '[*]' || str_contains($user['resources'],"Ingresses") ? 'checked' : ''}}>
+                        Ingresses
+                        <i class="input-helper"></i></label>
+                    </div>
+                    <div class="form-check form-check-flat form-check-primary">
+                        <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" name="customresources" value="true" {{$user['resources'] == '[*]' || str_contains($user['resources'],"CustomResources") ? 'checked' : ''}}>
+                        Custom Resources
+                        <i class="input-helper"></i></label>
+                    </div>
+                    <div class="form-check form-check-flat form-check-primary">
+                        <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" name="backups" value="true" {{$user['resources'] == '[*]' || str_contains($user['resources'],"Backups") ? 'checked' : ''}}>
+                        Backups
+                        <i class="input-helper"></i></label>
+                    </div>
+                </div>
+                <label class="col-sm-3 col-form-label">Verbs</label>
+                <div class="col-sm-12">
+                    <div class="form-check form-check-flat form-check-primary">
+                        <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" name="create" value="true" {{$user['verbs'] == '[*]' || str_contains($user['verbs'],"Create") ? 'checked' : ''}}>
+                        Create
+                        <i class="input-helper"></i></label>
+                    </div>
+                    <div class="form-check form-check-flat form-check-primary">
+                        <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" name="delete" value="true" {{$user['verbs'] == '[*]' || str_contains($user['verbs'],"Delete") ? 'checked' : ''}}>
+                        Delete
+                        <i class="input-helper"></i></label>
+                    </div>
+                </div>
+            </div>
             <button type="submit" class="btn btn-primary btn-fw">Submit</button>
             </form>
         </div>
