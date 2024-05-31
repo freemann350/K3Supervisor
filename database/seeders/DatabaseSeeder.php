@@ -27,8 +27,8 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@example.com',
             'password' => Hash::make('password'),
             'role' => 'A',
-            'resources' => '*',
-            'verbs' => '*'
+            'resources' => '[*]',
+            'verbs' => '[*]'
         ]);
         echo ("[OK]\n");
 
@@ -38,7 +38,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'user@example.com',
             'password' => Hash::make('password'),
             'role' => 'U',
-            'resources' => '*',
+            'resources' => '[*]',
             'verbs' => 'get'
         ]);
         echo ("[OK]\n");
