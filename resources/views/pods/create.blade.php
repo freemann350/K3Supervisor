@@ -149,19 +149,6 @@
                 @endif
             </div>
             <div class="form-group">
-                <label class="col-sm-3 col-form-label">Volume type</label>
-                <div class="col-sm-12">
-                    <select class="form-select" name="volumetype[]">
-                        <option>secret</option> 
-                        <option>persistentVolumeClaim</option> 
-                        <option>hostPath</option> 
-                        <option>nfs</option> 
-                        <option>emptyDir</option> 
-                        <option>configMap</option> 
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
                 <label class="col-sm-3 col-form-label">Restart Policy *</label>
                 <div class="col-sm-12">
                     <select class="form-select" name="restartpolicy">

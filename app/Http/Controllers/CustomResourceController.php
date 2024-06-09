@@ -131,7 +131,7 @@ class CustomResourceController extends Controller
                 $successMessage = $data['kind'] ." was added with success";
             }
 
-            return redirect()->route('CustomResource.index')->withInput()->with('success-msg', $successMessage);
+            return redirect()->route('CustomResources.index')->withInput()->with('success-msg', $successMessage);
         } catch (\GuzzleHttp\Exception\RequestException $e) {
             
             $errormsg = $this->treat_error($e->getResponse()->getBody()->getContents());
