@@ -93,8 +93,6 @@
                 </table>
             </div>
             <br>
-            <button onclick="location.reload();" type="button" class="btn btn-info btn-lg btn-block"><i class="mdi mdi-refresh"></i>Refresh info
-            </button>
             @else
             <p>Could not load info.</p>
             <p>Error: <b>{{$conn_error}}</b></p>

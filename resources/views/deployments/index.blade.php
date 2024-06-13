@@ -51,7 +51,7 @@
                     <td>{{$deployment['totalContainers']}}&nbsp;</td>
                     <td>
                         <a class="btn btn-outline-info btn-fw btn-rounded btn-sm"  href="{{route('Deployments.show',[$deployment['namespace'],$deployment['name']])}}"><i class="mdi mdi-information-outline"></i></a>
-                        @if ((Auth::user()->resources == '*' || str_contains(Auth::user()->resources,'Deployments')) && (Auth::user()->verbs == '*' || str_contains(Auth::user()->verbs,'delete')) )
+                        @if ((Auth::user()->resources == '[*]' || str_contains(Auth::user()->resources,'Deployments')) && (Auth::user()->verbs == '[*]' || str_contains(Auth::user()->verbs,'Delete')) )
                         @if (!preg_match('/^kube-/', $deployment['namespace']))
                         <a class="btn btn-outline-danger btn-fw btn-rounded btn-sm" href="#" onclick="_delete('Are you sure you want to delete the Deployment &quot;{{$deployment["name"]}}?','{{ route("Deployments.destroy", [$deployment['namespace'], $deployment['name']]) }}')"><i class="mdi mdi-trash-can-outline"></i></a>
                         @endif
@@ -74,7 +74,7 @@
     </div>
 </div>
 @if (isset($deployments))
-@if ((Auth::user()->resources == '*' || str_contains(Auth::user()->resources,'Deployments')) && (Auth::user()->verbs == '*' || str_contains(Auth::user()->verbs,'create')) )
+@if ((Auth::user()->resources == '[*]' || str_contains(Auth::user()->resources,'Deployments')) && (Auth::user()->verbs == '[*]' || str_contains(Auth::user()->verbs,'Create')) )
 <div class="d-grid gap-2">
   <a class="btn btn-success btn-lg btn-block" href="{{ route('Deployments.create') }}"><i class="mdi mdi-plus-circle"></i> Add new Deployment</a>
 </div>

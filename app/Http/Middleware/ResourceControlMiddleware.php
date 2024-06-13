@@ -17,7 +17,7 @@ class ResourceControlMiddleware
         // NAMESPACE
         if (str_contains($request->path(),'Namespaces') && ($request->method() == 'POST' || str_contains($request->path(),"/New"))) {
             if (str_contains(auth()->user()->resources,'Namespaces') || str_contains(auth()->user()->resources,'*')) {
-                if ((str_contains(auth()->user()->verbs, 'create') || str_contains(auth()->user()->verbs,'*'))) {
+                if ((str_contains(auth()->user()->verbs, 'Create') || str_contains(auth()->user()->verbs,'*'))) {
                     return $next($request);
                 }
             }
@@ -25,7 +25,7 @@ class ResourceControlMiddleware
 
         if (str_contains($request->path(),'Namespaces') && ($request->method() == 'DELETE')) {
             if (str_contains(auth()->user()->resources,'Namespaces') || str_contains(auth()->user()->resources,'*')) {
-                if ((str_contains(auth()->user()->verbs, 'delete') || str_contains(auth()->user()->verbs,'*'))) {
+                if ((str_contains(auth()->user()->verbs, 'Delete') || str_contains(auth()->user()->verbs,'*'))) {
                     return $next($request);
                 }
             }
@@ -34,7 +34,7 @@ class ResourceControlMiddleware
         // PODS
         if (str_contains($request->path(),'Pods') && ($request->method() == 'POST' || str_contains($request->path(),"/New"))) {
             if (str_contains(auth()->user()->resources,'Pods') || str_contains(auth()->user()->resources,'*')) {
-                if ((str_contains(auth()->user()->verbs, 'create') || str_contains(auth()->user()->verbs,'*'))) {
+                if ((str_contains(auth()->user()->verbs, 'Create') || str_contains(auth()->user()->verbs,'*'))) {
                     return $next($request);
                 }
             }
@@ -42,7 +42,7 @@ class ResourceControlMiddleware
 
         if (str_contains($request->path(),'Pods') && ($request->method() == 'DELETE')) {
             if (str_contains(auth()->user()->resources,'Pods') || str_contains(auth()->user()->resources,'*')) {
-                if ((str_contains(auth()->user()->verbs, 'delete') || str_contains(auth()->user()->verbs,'*'))) {
+                if ((str_contains(auth()->user()->verbs, 'Delete') || str_contains(auth()->user()->verbs,'*'))) {
                     return $next($request);
                 }
             }
@@ -51,7 +51,7 @@ class ResourceControlMiddleware
         // DEPLOYMENTS
         if (str_contains($request->path(),'Deployments') && ($request->method() == 'POST' || str_contains($request->path(),"/New"))) {
             if (str_contains(auth()->user()->resources,'Deployments') || str_contains(auth()->user()->resources,'*')) {
-                if ((str_contains(auth()->user()->verbs, 'create') || str_contains(auth()->user()->verbs,'*'))) {
+                if ((str_contains(auth()->user()->verbs, 'Create') || str_contains(auth()->user()->verbs,'*'))) {
                     return $next($request);
                 }
             }
@@ -59,7 +59,7 @@ class ResourceControlMiddleware
 
         if (str_contains($request->path(),'Deployments') && ($request->method() == 'DELETE')) {
             if (str_contains(auth()->user()->resources,'Deployments') || str_contains(auth()->user()->resources,'*')) {
-                if ((str_contains(auth()->user()->verbs, 'delete') || str_contains(auth()->user()->verbs,'*'))) {
+                if ((str_contains(auth()->user()->verbs, 'Delete') || str_contains(auth()->user()->verbs,'*'))) {
                     return $next($request);
                 }
             }
@@ -68,7 +68,7 @@ class ResourceControlMiddleware
         // SERVICES
         if (str_contains($request->path(),'Services') && ($request->method() == 'POST' || str_contains($request->path(),"/New"))) {
             if (str_contains(auth()->user()->resources,'Services') || str_contains(auth()->user()->resources,'*')) {
-                if ((str_contains(auth()->user()->verbs, 'create') || str_contains(auth()->user()->verbs,'*'))) {
+                if ((str_contains(auth()->user()->verbs, 'Create') || str_contains(auth()->user()->verbs,'*'))) {
                     return $next($request);
                 }
             }
@@ -76,7 +76,7 @@ class ResourceControlMiddleware
 
         if (str_contains($request->path(),'Services') && ($request->method() == 'DELETE')) {
             if (str_contains(auth()->user()->resources,'Services') || str_contains(auth()->user()->resources,'*')) {
-                if ((str_contains(auth()->user()->verbs, 'delete') || str_contains(auth()->user()->verbs,'*'))) {
+                if ((str_contains(auth()->user()->verbs, 'Delete') || str_contains(auth()->user()->verbs,'*'))) {
                     return $next($request);
                 }
             }
@@ -84,7 +84,7 @@ class ResourceControlMiddleware
         // INGRESSES
         if (str_contains($request->path(),'Ingresses') && ($request->method() == 'POST' || str_contains($request->path(),"/New"))) {
             if (str_contains(auth()->user()->resources,'Ingresses') || str_contains(auth()->user()->resources,'*')) {
-                if ((str_contains(auth()->user()->verbs, 'create') || str_contains(auth()->user()->verbs,'*'))) {
+                if ((str_contains(auth()->user()->verbs, 'Create') || str_contains(auth()->user()->verbs,'*'))) {
                     return $next($request);
                 }
             }
@@ -92,7 +92,7 @@ class ResourceControlMiddleware
 
         if (str_contains($request->path(),'Ingresses') && ($request->method() == 'DELETE')) {
             if (str_contains(auth()->user()->resources,'Ingresses') || str_contains(auth()->user()->resources,'*')) {
-                if ((str_contains(auth()->user()->verbs, 'delete') || str_contains(auth()->user()->verbs,'*'))) {
+                if ((str_contains(auth()->user()->verbs, 'Delete') || str_contains(auth()->user()->verbs,'*'))) {
                     return $next($request);
                 }
             }
@@ -101,18 +101,14 @@ class ResourceControlMiddleware
         // BACKUPS
         if (str_contains($request->path(),'Backups')) {
             if (str_contains(auth()->user()->resources,'Backups') || str_contains(auth()->user()->resources,'*')) {
-                if ((str_contains(auth()->user()->verbs, 'create') || str_contains(auth()->user()->verbs,'*'))) {
                     return $next($request);
-                }
             }
         }
 
         // BACKUPS
         if (str_contains($request->path(),'CustomResources')) {
             if (str_contains(auth()->user()->resources,'CustomResources') || str_contains(auth()->user()->resources,'*')) {
-                if ((str_contains(auth()->user()->verbs, 'create') || str_contains(auth()->user()->verbs,'*'))) {
-                    return $next($request);
-                }
+                return $next($request);
             }
         }
 

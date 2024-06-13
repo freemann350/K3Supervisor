@@ -99,45 +99,55 @@
                                 <span class="menu-title">Nodes</span>
                             </a>
                         </li>
+                        @if (Auth::user()->resources == '[*]' || str_contains(Auth::user()->resources,'Namespaces'))
                         <li class="nav-item {{ str_contains(Route::currentRouteName(),'Namespaces.') ? 'active' : '' }}">
                             <a class="nav-link" href="{{route("Namespaces.index")}}">
                                 <i class="menu-icon mdi mdi-tournament"></i>
                                 <span class="menu-title">Namespaces</span>
                             </a>
                         </li>
+                        @endif
+                        @if (Auth::user()->resources == '[*]' || str_contains(Auth::user()->resources,'Pods'))
                         <li class="nav-item {{ str_contains(Route::currentRouteName(),'Pods.') ? 'active' : '' }}">
                             <a class="nav-link" href="{{route("Pods.index")}}">
                                 <i class="menu-icon mdi mdi-apps"></i>
                                 <span class="menu-title">Pods</span>
                             </a>
                         </li>
+                        @endif
+                        @if (Auth::user()->resources == '[*]' || str_contains(Auth::user()->resources,'Deployments'))
                         <li class="nav-item {{ str_contains(Route::currentRouteName(),'Deployments.') ? 'active' : '' }}">
                             <a class="nav-link" href="{{route("Deployments.index")}}">
                                 <i class="menu-icon mdi mdi-apps-box"></i>
                                 <span class="menu-title">Deployments</span>
                             </a>
                         </li>
+                        @endif
+                        @if (Auth::user()->resources == '[*]' || str_contains(Auth::user()->resources,'Services'))
                         <li class="nav-item {{ str_contains(Route::currentRouteName(),'Services.') ? 'active' : '' }}">
                             <a class="nav-link" href="{{route("Services.index")}}">
                                 <i class="menu-icon mdi mdi-lan"></i>
                                 <span class="menu-title">Services</span>
                             </a>
                         </li>
+                        @endif
+                        @if (Auth::user()->resources == '[*]' || str_contains(Auth::user()->resources,'Ingresses'))
                         <li class="nav-item {{ str_contains(Route::currentRouteName(),'Ingresses.') ? 'active' : '' }}">
                             <a class="nav-link" href="{{route("Ingresses.index")}}">
                                 <i class="menu-icon mdi mdi-sitemap"></i>
                                 <span class="menu-title">Ingresses</span>
                             </a>
                         </li>
-                        @if (Auth::user()->resources == '*' || str_contains(Auth::user()->resources,'CustomResource'))
-                        <li class="nav-item {{ str_contains(Route::currentRouteName(),'CustomResource.') ? 'active' : '' }}">
+                        @endif
+                        @if (Auth::user()->resources == '[*]' || str_contains(Auth::user()->resources,'CustomResource'))
+                        <li class="nav-item {{ str_contains(Route::currentRouteName(),'CustomResources.') ? 'active' : '' }}">
                             <a class="nav-link" href="{{route("CustomResources.index")}}">
                                 <i class="menu-icon mdi mdi-clipboard-plus"></i>
                                 <span class="menu-title">Create Resource</span>
                             </a>
                         </li>
                         @endif
-                        @if (Auth::user()->resources == '*' || str_contains(Auth::user()->resources,'Backups'))
+                        @if (Auth::user()->resources == '[*]' || str_contains(Auth::user()->resources,'Backups'))
                         <li class="nav-item {{ str_contains(Route::currentRouteName(),'Backups.') ? 'active' : '' }}">
                             <a class="nav-link" href="{{route("Backups.index")}}">
                                 <i class="menu-icon mdi mdi-content-save-all"></i>

@@ -44,7 +44,7 @@
                     @endif
                     <td>
                         <a class="btn btn-outline-info btn-fw btn-rounded btn-sm"  href="{{route('Namespaces.show',$namespace['name'])}}"><i class="mdi mdi-information-outline"></i></a>
-                        @if ((Auth::user()->resources == '*' || str_contains(Auth::user()->resources,'Namespaces')) && (Auth::user()->verbs == '*' || str_contains(Auth::user()->verbs,'delete')) )
+                        @if ((Auth::user()->resources == '[*]' || str_contains(Auth::user()->resources,'Namespaces')) && (Auth::user()->verbs == '[*]' || str_contains(Auth::user()->verbs,'Delete')) )
                         @if (!preg_match('/^kube-/', $namespace['name']))
                         <a class="btn btn-outline-danger btn-fw btn-rounded btn-sm" href="#" onclick="_delete('Are you sure you want to delete the Namespace &quot;{{$namespace["name"]}}?','{{ route("Namespaces.destroy", $namespace['name']) }}')"><i class="mdi mdi-trash-can-outline"></i></a>
                         @endif
@@ -67,7 +67,7 @@
     </div>
 </div>
 @if (isset($namespaces))
-@if ((Auth::user()->resources == '*' || str_contains(Auth::user()->resources,'Namespaces')) && (Auth::user()->verbs == '*' || str_contains(Auth::user()->verbs,'create')) )
+@if ((Auth::user()->resources == '[*]' || str_contains(Auth::user()->resources,'Namespaces')) && (Auth::user()->verbs == '[*]' || str_contains(Auth::user()->verbs,'Create')) )
 <div class="d-grid gap-2">
   <a class="btn btn-success btn-lg btn-block" href="{{ route('Namespaces.create') }}"><i class="mdi mdi-plus-circle"></i> Add new Namespace</a>
 </div>
