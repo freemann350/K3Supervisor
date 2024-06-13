@@ -1,4 +1,4 @@
-# K8Supervisor
+# K8Supervisor - Simple K8S Control Panel
 <p align="center">
 <img width="230" height="260" align="center" src="https://github.com/freemann350/K8Supervisor/blob/main/public/img/favicon.png">
 </p>
@@ -10,6 +10,17 @@ This project was developed using [K3S](https://k3s.io) due to its ease of use an
 It is **HIGHLY RECOMMENDED** to use this app with configured with authentication to the API without the use of *kubectl proxy*. Use this [official Kubernetes guide](https://kubernetes.io/docs/tasks/administer-cluster/access-cluster-api/?amp;amp#without-kubectl-proxy) to deploy the API with (TOKEN) authentication
 
 UI Based on my previous project, [MikroKontrol](https://github.com/freemann350/MikroKontrol).
+## Interface
+![imagem](https://github.com/freemann350/K8Supervisor/assets/25934321/5d496710-aad4-4eb5-a065-fcf1e9647ccd)
+![imagem](https://github.com/freemann350/K8Supervisor/assets/25934321/81c47408-93a2-4b47-afa0-b90f3a7b3bde)
+![imagem](https://github.com/freemann350/K8Supervisor/assets/25934321/3c98c173-0994-40cb-82be-86520d9662a6)
+![imagem](https://github.com/freemann350/K8Supervisor/assets/25934321/3c42e97b-87fb-4d1b-8cd7-39ba07161a20)
+![imagem](https://github.com/freemann350/K8Supervisor/assets/25934321/dee70973-0d45-4dc0-a8b7-96dbe141f8bf)
+![imagem](https://github.com/freemann350/K8Supervisor/assets/25934321/4dfd923c-760d-4e33-a80e-ff13784beee9)
+![imagem](https://github.com/freemann350/K8Supervisor/assets/25934321/52c015c3-0201-440c-b077-d117d7ecc383)
+![imagem](https://github.com/freemann350/K8Supervisor/assets/25934321/942bc850-def5-4cfa-8048-7599b60c3d96)
+![imagem](https://github.com/freemann350/K8Supervisor/assets/25934321/95caeab5-8798-4ef8-b364-2d5e69ded5c2)
+![imagem](https://github.com/freemann350/K8Supervisor/assets/25934321/2b3aeefa-c772-44f8-a08b-258aeb779816)
 
 ## Features:
 
