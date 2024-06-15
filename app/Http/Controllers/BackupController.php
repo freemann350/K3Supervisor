@@ -183,12 +183,11 @@ class BackupController extends Controller
                         }
 
                         if ($options['excludeDeploymentPods'] && $resource == 'pods') {
+                            $deploymentPod = false;
                             if (isset($resourceData['metadata']['ownerReferences'])) {
                                 foreach ($resourceData['metadata']['ownerReferences'] as $ownerReferences) {
                                     if (isset($ownerReferences['kind']) && $ownerReferences['kind'] == 'ReplicaSet') {
                                         $deploymentPod = true;
-                                    } else {
-                                        $deploymentPod = false;
                                     }
                                     break;
                                 }
@@ -196,7 +195,6 @@ class BackupController extends Controller
                             if ($deploymentPod)
                                 continue;
                         }
-
                         unset($resourceData['metadata']['managedFields']);
                         unset($resourceData['metadata']['uid']);
                         unset($resourceData['metadata']['resourceVersion']);
